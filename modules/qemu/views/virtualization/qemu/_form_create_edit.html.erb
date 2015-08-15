@@ -632,6 +632,9 @@
       <textarea name="command_line" style="width:100%; height:11em"><%
         %><%= vm.format_cmdline if vm %><%
       %></textarea>
+
+      <h5>Experimental / TODO / (LibVirt)</h5>
+      <textarea style="width:100%; height:11em"><%= vm.format_libvirt_xml if vm %></textarea>
       
     </div>
 

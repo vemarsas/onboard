@@ -251,6 +251,10 @@ class OnBoard
           return cmdline
         end
 
+        def format_libvirt_xml
+          return "<todo>\n#{format_cmdline}\n</todo>"
+        end
+
         def setup_networking(*opts)
           uid = Process.uid
           @config['-net'].select{|x| x['type'] == 'tap'}.each do |tap| 
