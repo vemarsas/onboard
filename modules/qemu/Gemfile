@@ -1,4 +1,5 @@
 source "https://rubygems.org" do
   # vendor_ruby prefered
   # gem 'rmagick', '~> 2.13.2'
+  # gem 'ruby-libvirt', '~> 0.5.1'
 end
