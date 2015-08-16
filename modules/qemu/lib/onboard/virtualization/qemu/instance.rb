@@ -88,7 +88,7 @@ class OnBoard
           @config.cmd['opts']
         end
 
-        def format_cmdline          
+        def format_cmdline(format_options={})
 
           return @config.force_command_line if @config.force_command_line
 
@@ -199,6 +199,9 @@ class OnBoard
                 drive_args << %Q{file="#{d['file_url']}"}
               elsif d['file']
                 drive_args << %Q{file="#{d['file']}"}
+              elsif format_options[:use_for] == :libvirt
+                # e.g. empty cdrom, you still need to specify file=
+                drive_args << %q{file=""}
               end
               # Numeric or nil
               %w{index bus unit}.each do |par|
@@ -242,7 +245,12 @@ class OnBoard
           cmdline << '-boot' << ' ' << 'menu=on,order=dc' << ' '
           # 
           # Guest CPU will have host CPU features ('flags') 
-          cmdline << '-cpu' << ' ' << 'qemu64' << ' '
+          unless format_options[:use_for] == :libvirt
+            # Just, libvirt conversion doesn't like this,
+            # use defaults in that case.
+            cmdline << '-cpu' << ' ' << 'host' << ' '
+          end
+
 =begin
           cmdline << '-usbdevice' << ' ' << 'tablet' << ' '  
           # The above should fix some problems with VNC,
@@ -260,7 +268,9 @@ class OnBoard
 
         def format_libvirt_xml
           @libvirt = Libvirt::open('qemu:///session')
-          return @libvirt.domain_xml_from_native('qemu-argv', format_cmdline)
+          return @libvirt.domain_xml_from_native(
+            'qemu-argv',
+            format_cmdline(:use_for => :libvirt))
         end
 
         def setup_networking(*opts)
