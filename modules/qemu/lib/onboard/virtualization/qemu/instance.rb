@@ -9,6 +9,13 @@ rescue Gem::LoadError
   # May be available in vendor_ruby and not as a gem
 end
 autoload :Magick, 'RMagick'
+begin
+  gem 'ruby-libvirt' # To make autoload work
+rescue Gem::LoadError
+  # May be available in vendor_ruby and not as a gem
+end
+autoload :Magick, 'RMagick'
+autoload :Libvirt, 'libvirt'
 
 require 'onboard/util'
 require 'onboard/extensions/process'
@@ -235,7 +242,7 @@ class OnBoard
           cmdline << '-boot' << ' ' << 'menu=on,order=dc' << ' '
           # 
           # Guest CPU will have host CPU features ('flags') 
-          cmdline << '-cpu' << ' ' << 'host' << ' '
+          cmdline << '-cpu' << ' ' << 'qemu64' << ' '
 =begin
           cmdline << '-usbdevice' << ' ' << 'tablet' << ' '  
           # The above should fix some problems with VNC,
@@ -252,7 +259,8 @@ class OnBoard
         end
 
         def format_libvirt_xml
-          return "<todo>\n#{format_cmdline}\n</todo>"
+          @libvirt = Libvirt::open('qemu:///session')
+          return @libvirt.domain_xml_from_native('qemu-argv', format_cmdline)
         end
 
         def setup_networking(*opts)
