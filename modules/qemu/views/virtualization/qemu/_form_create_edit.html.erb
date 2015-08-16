@@ -634,7 +634,17 @@
       %></textarea>
 
       <h5>Experimental / TODO / (LibVirt)</h5>
-      <textarea style="width:100%; height:11em"><%= vm.format_libvirt_xml if vm %></textarea>
+      <textarea style="width:100%; height:11em">
+        <%=
+          begin
+            vm.format_libvirt_xml if vm
+          rescue Libvirt::Error => e
+            e.message   +
+            "\n---\n"   +
+            e.backtrace.join("\n")
+          end
+        %>
+      </textarea>
       
     </div>
 
