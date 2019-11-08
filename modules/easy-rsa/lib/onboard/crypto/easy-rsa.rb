@@ -16,12 +16,16 @@ class OnBoard
 
       def self.create_dh(n)
         FileUtils.mkdir_p KEYDIR unless Dir.exists? KEYDIR
+        build_dh = 'build-dh'
+        if n.respond_to? :to_i and n.to_i > 2048
+          build_dh = 'build-dh.dsaparam'  # faster
+        end
         System::Command.run <<EOF
 cd #{SCRIPTDIR}
 export KEY_DIR=#{KEYDIR}
 . ./vars
 export KEY_SIZE=#{n}
-./build-dh
+./#{build-dh}
 EOF
         FileUtils.mkdir_p SSL::DIR unless Dir.exists? SSL::DIR
         FileUtils.cp(KEYDIR + '/dh' + n.to_s + '.pem', SSL::DIR)

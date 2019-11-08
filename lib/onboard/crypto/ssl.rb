@@ -9,7 +9,7 @@ class OnBoard
       DIR                   = OnBoard::CONFDIR + '/crypto/ssl'
       CERTDIR               = DIR + '/cert'
       KEYDIR                = CERTDIR + '/private'
-      KEY_SIZES             = [2048, 1024]
+      KEY_SIZES             = [4096, 2048, 1024]
       CACERT                = DIR + '/ca/ca.crt'
       CAKEY                 = DIR + '/ca/private/ca.key'
       SLASH_FILENAME_ESCAPE = '__slash__'
