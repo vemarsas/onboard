@@ -11,6 +11,10 @@ require 'onboard/crypto/ssl'
 class OnBoard::Controller < Sinatra::Base
 
   get '/crypto/easy-rsa.:format' do
+    'ciao'
+  end
+
+  get '/crypto/easy-rsa/legacy.:format' do
     # create Diffie-Hellman params if they don't exist
     OnBoard::Crypto::SSL::KEY_SIZES.each do |n|
       Thread.new do
@@ -31,7 +35,7 @@ class OnBoard::Controller < Sinatra::Base
     )
   end
 
-  get '/crypto/easy-rsa/ca/index.txt' do
+  get '/crypto/easy-rsa/legacy/ca/index.txt' do
     index_txt = OnBoard::Crypto::EasyRSA::KEYDIR + '/index.txt'
     if File.exists? index_txt
       content_type 'text/plain'
@@ -42,7 +46,7 @@ class OnBoard::Controller < Sinatra::Base
     end
   end
 
-  get '/crypto/easy-rsa/ca/crl.:sslformat' do
+  get '/crypto/easy-rsa/legacy/ca/crl.:sslformat' do
     # CRL is stored in PEM format
     crl_pem = OnBoard::Crypto::EasyRSA::KEYDIR + '/crl.pem'
     if File.exists? crl_pem
@@ -64,7 +68,7 @@ class OnBoard::Controller < Sinatra::Base
     end
   end
 
-  delete '/crypto/easy-rsa/ca.:format' do
+  delete '/crypto/easy-rsa/legacy/ca.:format' do
     msg = OnBoard::System::Command.run <<EOF
 cd #{OnBoard::Crypto::EasyRSA::SCRIPTDIR}
 export KEY_DIR=#{OnBoard::Crypto::EasyRSA::KEYDIR}
@@ -83,7 +87,7 @@ EOF
     )
   end
 
-  post '/crypto/easy-rsa/ca.:format' do
+  post '/crypto/easy-rsa/legacy/ca.:format' do
     msg = {}
     if msg[:err] = OnBoard::Crypto::EasyRSA::CA.HTTP_POST_data_invalid?(params)
       # client sent invalid data
@@ -107,7 +111,7 @@ EOF
   end
 
   # cert. creation and signature by our CA
-  post '/crypto/easy-rsa/certs.:format' do
+  post '/crypto/easy-rsa/legacy/certs.:format' do
     msg = {}
     if msg[:err] =
         OnBoard::Crypto::EasyRSA::Cert.HTTP_POST_data_invalid?(params)
@@ -136,7 +140,7 @@ EOF
 
   # A WebService client does not need an entity-body (headers and Status
   # will suffice), so html is fine as well, since it will be ignored...
-  delete '/crypto/easy-rsa/certs/:name.crt' do
+  delete '/crypto/easy-rsa/legacy/certs/:name.crt' do
     msg = {:ok => true}
     certfile = "#{OnBoard::Crypto::SSL::CERTDIR}/#{params[:name]}.crt"
     keyfile = "#{OnBoard::Crypto::SSL::CERTDIR}/private/#{params[:name]}.key"
