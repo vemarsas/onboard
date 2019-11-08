@@ -247,16 +247,16 @@ pre {
   overflow: auto;
 }
 
-a, .hmenu-bullet {
+a, .hmenu-bullet, td a code {
   color: <%= highlight %>;
   text-decoration: none;
 }
 
-a {
+a, td a code {
   font-weight: bold;
 }
 
-a:hover   {
+a:hover, td a:hover code   {
   color: white; 
   background: <%= highlight %>; 
 } 

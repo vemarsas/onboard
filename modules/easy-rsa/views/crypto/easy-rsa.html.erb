@@ -252,9 +252,11 @@
 <% end %>
 
 <% if objects['ca'] and not objects['ca']['err'] %>
-  <form method="POST" action="easy-rsa/certs.html">
+  <form method="POST" action="<%= pkiname %>/certs.html">
+  <% days = 3650 %>
 <% else %>
-  <form method="POST" action="easy-rsa/ca.html">
+  <form method="POST" action="<%= pkiname %>/ca.html">
+  <% days = 36500 %>  <!-- Renewing a CA is a total hassle... -->
 <% end %>
 
   <table>
@@ -274,11 +276,11 @@
         <td style="text-align:center;">
           <select name="key_size">
             <% OnBoard::Crypto::SSL::KEY_SIZES.each do |ksiz| %>
-              <option value="<%= ksiz %>" <%= 'selected' if ksiz == 2048 %>> <%= ksiz %> <%= '(recommended)' if ksiz == 2048 %> </option>
+              <option value="<%= ksiz %>" <%= 'selected' if ksiz == 2048 %>> <%= ksiz %> <%= '(not recommended)' if ksiz < 2048 %> </option>
             <% end %>
           </select>
         </td>
-        <td><input name="days" size="4" value="3650"/></td>
+        <td><input name="days" size="6" value="<%= days %>"/></td>
         <td style="text-align:center;">
           <select name="C">
             <% country_codes_by_name.each do |cc| %>
@@ -332,7 +334,7 @@
 <h3>Import</h3>
 
 <div style="width:48%; float:left;">
-  <form method="POST" action="/crypto/ssl/certs.html" enctype="multipart/form-data">
+  <form method="POST" action="/crypto/ssl/<%= pkiname %>/certs.html" enctype="multipart/form-data">
     <input type="hidden" name="file_upload" value="yes"/>
     <table>
       <tr>
@@ -349,7 +351,7 @@
 </div>
 
 <div style="width:48%; float:right;">
-  <form method="POST" action="/crypto/ssl/CRLs.html" enctype="multipart/form-data">
+  <form method="POST" action="/crypto/ssl/<%= pkiname %>/CRLs.html" enctype="multipart/form-data">
     <input type="hidden" name="file_upload" value="yes"/>
     <table>
       <tr>

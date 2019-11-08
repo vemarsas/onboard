@@ -4,7 +4,7 @@ autoload :OpenSSL,    'onboard/extensions/openssl'
 class OnBoard
   class Controller
 
-    get '/crypto/ssl/ca/ca.crt' do
+    get '/crypto/ssl/:pkiname/ca/ca.crt' do
       # decode it, for better human readability (but it's still a valid cert.)
       c = ::OpenSSL::X509::Certificate.new(File.read(Crypto::SSL::CACERT))
       content_type "application/x-x509-ca-cert"
@@ -12,7 +12,7 @@ class OnBoard
       c.to_text + c.to_pem
     end
 
-    get '/crypto/ssl/certs/:name.crt' do
+    get '/crypto/ssl/:pkiname/certs/:name.crt' do
       certfile = "#{Crypto::SSL::CERTDIR}/#{params[:name]}.crt"
       if File.exists? certfile
         c = ::OpenSSL::X509::Certificate.new(File.read(certfile))
@@ -30,7 +30,7 @@ class OnBoard
       end
     end
 
-    get '/crypto/ssl/CRLs/:name.crl.?:sslformat?' do
+    get '/crypto/ssl/:pkiname/CRLs/:name.crl.?:sslformat?' do
       params[:sslformat] = 'pem' unless params[:sslformat]
       crlfile = "#{Crypto::SSL::CERTDIR}/#{params[:name]}.crl"
       if File.exists? crlfile
@@ -53,7 +53,7 @@ class OnBoard
       end
     end
 
-    get '/crypto/ssl/certs/private/:name.key' do
+    get '/crypto/ssl/:pkiname/certs/private/:name.key' do
       keyfile = "#{Crypto::SSL::KEYDIR}/#{params[:name]}.key"
       if File.exists? keyfile
         content_type "application/x-pem-key"
@@ -65,7 +65,7 @@ class OnBoard
     end
 
     # Certificate upload
-    post '/crypto/ssl/certs.:format' do
+    post '/crypto/ssl/:pkiname/certs.:format' do
       target = nil
       msg = {:ok => true}
       if params['certificate'].respond_to? :[]
@@ -131,7 +131,7 @@ class OnBoard
     end
 
     # CRL upload
-    post '/crypto/ssl/CRLs.:format' do
+    post '/crypto/ssl/:pkiname/CRLs.:format' do
       target = nil
       msg = {:ok => true}
       if params['CRL'].respond_to? :[]

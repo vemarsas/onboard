@@ -95,7 +95,7 @@ EOF
     )
   end
 
-  post '/crypto/easy-rsa/default/ca.:format' do
+  post '/crypto/easy-rsa/:pkiname/ca.:format' do
     msg = {}
     if msg[:err] = OnBoard::Crypto::EasyRSA::CA.HTTP_POST_data_invalid?(params)
       # client sent invalid data
@@ -119,7 +119,7 @@ EOF
   end
 
   # cert. creation and signature by our CA
-  post '/crypto/easy-rsa/default/certs.:format' do
+  post '/crypto/easy-rsa/:pkiname/certs.:format' do
     msg = {}
     if msg[:err] =
         OnBoard::Crypto::EasyRSA::Cert.HTTP_POST_data_invalid?(params)
