@@ -24,7 +24,7 @@ class OnBoard::Controller < Sinatra::Base
     )
   end
 
-  get '/crypto/easy-rsa/legacy.:format' do
+  get '/crypto/easy-rsa/:pkiname.:format' do
     # create Diffie-Hellman params if they don't exist
     OnBoard::Crypto::SSL::KEY_SIZES.each do |n|
       Thread.new do
