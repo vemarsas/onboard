@@ -85,7 +85,7 @@
               <!-- <td><%= "<strong>#{i18n.yes}</strong>" %> <small>[<a href="/crypto/ssl/certs/private/<%= name %>.key">download</a>]</small></td> -->
               <td style="text-align:center"><a class="img" title="Download" href="/crypto/ssl/certs/private/<%= name %>.key"><img style="vertical-align:middle;" alt="download" src="<%= icondir %>/<%= iconsize %>/actions/document-save-as.png"/></a></td>
             <% else %>
-              <td class="error"><code><%= html_escape cert['private_key']['err'] %></code></td>
+              <td class="error"><code><%= escape_html cert['private_key']['err'] %></code></td>
             <% end %>
           <% else %>
             <!-- <td><%= i18n.no %></td> -->
@@ -121,7 +121,7 @@
 <h3>Certificate Authority</h3>
 <% if objects['ca'] and objects['ca']['err'] %>
   <span class="error">
-    Certificate error: <code><%= html_escape objects['ca']['err'] %></code>
+    Certificate error: <code><%= escape_html objects['ca']['err'] %></code>
   </span>
 <% end %>
 <% if objects['ca'] and not objects['ca']['err'] %>
