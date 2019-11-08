@@ -6,12 +6,22 @@ require 'sinatra/base'
 
 require 'onboard/system/command'
 require 'onboard/crypto/easy-rsa'
+require 'onboard/crypto/easy-rsa/multi'
 require 'onboard/crypto/ssl'
+require 'onboard/crypto/ssl/multi'
 
 class OnBoard::Controller < Sinatra::Base
 
   get '/crypto/easy-rsa.:format' do
-    'ciao'
+    OnBoard::Crypto::SSL::Multi.handle_legacy
+    OnBoard::Crypto::EasyRSA::Multi.handle_legacy
+    format(
+      :module   => 'easy-rsa',
+      :path     => '/crypto/easy-rsa/multi',
+      :format   => params[:format],
+      :objects  => OnBoard::Crypto::SSL::Multi.get_pkis(),
+      :title    => 'Public Key Infrastructures (PKIs)'
+    )
   end
 
   get '/crypto/easy-rsa/legacy.:format' do

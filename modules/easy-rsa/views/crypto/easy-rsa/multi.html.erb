@@ -1,0 +1,12 @@
+<% # encoding: utf-8
+  require 'onboard/crypto/easy-rsa'
+  require 'onboard/crypto/ssl'
+
+  pkis = objects
+%>
+
+<h2><%= title %></h2>
+
+<% pkis.each do |pki| %>
+  <a href="easy-rsa/<%= pki %>.html"> <%= pki %></a>
+<% end %>
