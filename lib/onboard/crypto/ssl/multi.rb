@@ -9,7 +9,7 @@ class OnBoard
       module Multi
         class << self
           def get_pkis
-            return ['legacy']
+            return ['default']
           end
           def handle_legacy
           end
