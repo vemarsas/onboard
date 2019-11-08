@@ -25,7 +25,7 @@ cd #{SCRIPTDIR}
 export KEY_DIR=#{KEYDIR}
 . ./vars
 export KEY_SIZE=#{n}
-./#{build-dh}
+./#{build_dh}
 EOF
         FileUtils.mkdir_p SSL::DIR unless Dir.exists? SSL::DIR
         FileUtils.cp(KEYDIR + '/dh' + n.to_s + '.pem', SSL::DIR)
