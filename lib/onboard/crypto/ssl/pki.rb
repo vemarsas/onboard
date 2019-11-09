@@ -14,7 +14,8 @@ class OnBoard
 
         def initialize(name)
           @name = name
-          @our_CA = nil
+          @ca = nil
+          @cadata = {}
         end
 
         def datadir
@@ -37,6 +38,17 @@ class OnBoard
           File.join datadir, 'ca/private/ca.key'
         end
 
+        def get_cadata!
+          begin
+            @ca = OpenSSL::X509::Certificate.new(File.read cacertpath)
+            @cadata = @our_CA.to_h
+          rescue Errno::ENOENT
+          rescue OpenSSL::X509::CertificateError
+            @cadata = {'err' => $!}
+          end
+          return @cadata
+        end
+
         def getAllCerts(opt_h={})
           opt_h_default = {
             :certs  => {
@@ -56,6 +68,8 @@ class OnBoard
 
           h = {} # return value
 
+          get_cadata!
+
           # sugar
           certdir = opt_h[:certs][:dir]
           certext = opt_h[:certs][:ext]
@@ -66,12 +80,12 @@ class OnBoard
 
           Dir.glob "#{certdir}/*.#{certext}" do |certfile|
             name = File.basename(certfile).sub(/\.#{certext}$/, '')
+            h[name] = {'cert' => {}}
             keyfile = "#{keydir}/#{name}.#{keyext}"
             begin
               certobj = OpenSSL::X509::Certificate.new(File.read certfile)
               signed_by_our_CA = false
-              signed_by_our_CA = certobj.verify(@our_CA.public_key) if
-                  @our_CA.respond_to? :public_key
+              signed_by_our_CA = certobj.verify(@ca.public_key) if @ca.respond_to? :public_key
               h[name] = {
                   'cert'              => certobj.to_h,
                   'private_key'       => false,
@@ -81,12 +95,13 @@ class OnBoard
               h[name] = {'cert' => {'err' => $!}}
             end
 
-            # CRL:
-            # very simple match by filename, no OpenSSL check
-            # (was made at file upload... somewhat :-P)
-            if File.readable? "#{crldir}/#{name}.#{crlext}"
-              h[name]['crl'] = "#{name}.#{crlext}"
-            end
+            # CRL feature has been buggy since single-PKI version...
+            # # CRL:
+            # # very simple match by filename, no OpenSSL check
+            # # (was made at file upload... somewhat :-P)
+            # if File.readable? "#{crldir}/#{name}.#{crlext}"
+            #   h[name]['crl'] = "#{name}.#{crlext}"
+            # end
 
             if File.exists? keyfile
               begin
