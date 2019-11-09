@@ -9,13 +9,14 @@ class OnBoard
     module EasyRSA
       module Multi
 
+        SUBDIR = '__multipki__'
+
         class << self
           def handle_legacy
           end
           def add_pki(pkiname)
             pki = PKI.new(pkiname)
             pki.mkdir
-            FileUtils.mkdir_p File.join KEYDIR, pkiname
           end
         end
 
@@ -24,9 +25,8 @@ class OnBoard
             @name = name
           end
           def mkdir
-            FileUtils.mkdir_p File.join SSL::CERTDIR, @name
-            FileUtils.mkdir_p File.join SSL::KEYDIR, @name
-            FileUtils.mkdir_p File.join EasyRSA::KEYDIR, @name
+            FileUtils.mkdir_p File.join SSL::DATADIR, Multi::SUBDIR, @name
+            FileUtils.mkdir_p File.join EasyRSA::DATADIR, Multi::SUBDIR, @name
           end
         end
 
