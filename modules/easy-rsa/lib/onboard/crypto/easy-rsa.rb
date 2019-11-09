@@ -15,23 +15,36 @@ class OnBoard
       KEYDIR = DATADIR + '/keys'
       CRL = KEYDIR + '/crl.pem'
 
-      def self.create_dh(n)
-        FileUtils.mkdir_p KEYDIR unless Dir.exists? KEYDIR
-        build_dh = 'build-dh'
-        if n.respond_to? :to_i and n.to_i > 2048
-          build_dh = 'build-dh.dsaparam'  # faster
+      class PKI
+        def initialize(name)
+          @name = name
         end
-        System::Command.run <<EOF
+
+        def datadir
+          File.join DATADIR, @name
+        end
+        def keydir
+          File.join datadir, @name
+        end
+
+        def self.create_dh(n)
+          FileUtils.mkdir_p keydir unless Dir.exists? keydir
+          build_dh = 'build-dh'
+          if n.respond_to? :to_i and n.to_i > 2048
+            build_dh = 'build-dh.dsaparam'  # faster
+          end
+          System::Command.run <<EOF
 cd #{SCRIPTDIR}
-export KEY_DIR=#{KEYDIR}
+export KEY_DIR=#{keydir}
 . ./vars
 export KEY_SIZE=#{n}
 ./#{build_dh}
 EOF
-        FileUtils.mkdir_p SSL::DIR unless Dir.exists? SSL::DIR
-        FileUtils.cp(KEYDIR + '/dh' + n.to_s + '.pem', SSL::DIR)
+          sslpki = SSL::PKI.new @name
+          FileUtils.mkdir_p sslpki.datadir unless Dir.exists? sslpki::datadir
+          FileUtils.cp(keydir + '/dh' + n.to_s + '.pem', sslpki.datadir)
+        end
       end
-
     end
   end
 end
