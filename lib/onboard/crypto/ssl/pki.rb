@@ -19,7 +19,7 @@ class OnBoard
         end
 
         def datadir
-          OnBoard::CONFDIR + '/crypto/ssl/' + Multi::SUBDIR + '/' + @name
+          OnBoard::Crypto::SSL::DATADIR + OnBoard::Crypto::SSL::Multi::SUBDIR + '/' + @name
         end
         def certdir
           File.join datadir, 'cert'
@@ -133,7 +133,7 @@ class OnBoard
           n = nil
           KEY_SIZES.each do |n|
             dh_file = "dh#{n}.pem"
-            dh_file_fullpath = File.join(DIR, dh_file)
+            dh_file_fullpath = File.join(datadir, dh_file)
             dh_h[dh_file] = {} unless dh_h[dh_file]
             if @dh_mutexes[n] and @dh_mutexes[n].respond_to? :locked?
               dh_h[dh_file]['being_created'] = @dh_mutexes[n].locked?
@@ -155,7 +155,7 @@ class OnBoard
           begin
             if n_or_file.kind_of? Numeric or n_or_file.to_i > 0
               dh_ = OpenSSL::PKey::DH.new(
-                  File.read(DIR + '/dh' + n_or_file.to_s + '.pem')
+                  File.read(datadir + '/dh' + n_or_file.to_s + '.pem')
               )
             else
               dh_ = OpenSSL::PKey::DH.new(File.read(n_or_file))
