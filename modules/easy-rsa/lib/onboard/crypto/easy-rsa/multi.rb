@@ -2,6 +2,7 @@ autoload :FileUtils, 'fileutils'
 autoload :Filepath, 'filepath'
 
 require 'onboard/crypto/ssl'
+require 'onboard/crypto/ssl/multi'
 require 'onboard/crypto/easy-rsa'
 
 class OnBoard
@@ -9,7 +10,7 @@ class OnBoard
     module EasyRSA
       module Multi
 
-        SUBDIR = '__multipki__'
+        SUBDIR = SSL::Multi::SUBDIR
 
         class << self
           def handle_legacy
