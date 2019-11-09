@@ -2,15 +2,34 @@
   require 'onboard/crypto/easy-rsa'
   require 'onboard/crypto/ssl'
 
-  pkis = objects
+  pkinames = objects - ['external']
 %>
 
 <h2><%= title %></h2>
 
-<% pkis.each do |pki| %>
-  <a href="easy-rsa/<%= pki %>.html"> <%= pki %></a>
-<% end %>
+<table>
+  <thead>
+    <tr>
+      <th>PKI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% pkinames.each do |pkiname| %>
+      <% next if pkiname == 'default' %>
+      <tr>
+        <td><a href="easy-rsa/<%= pkiname %>.html"> <%= pkiname %></a></td>
+      </tr>
+    <% end %>
+    <tr>
+      <td><a href="easy-rsa/default.html" style="font-style:italic">Default PKI</a></td>
+    </tr>
+    <tr>
+      <td>
+        <form method="POST">
+          <button type="submit">(Add new!)</button> <input type="text" name="pkiname"/> 
+        </form>
+      </td>
+    <tr>
+  </tbody>
+</table>
 
-<form method="POST">
-  <input type="text" name="pkiname"/> <button type="submit">Add new!</button>
-</form>
