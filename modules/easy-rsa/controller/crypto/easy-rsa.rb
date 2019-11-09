@@ -96,22 +96,24 @@ class OnBoard::Controller < Sinatra::Base
   end
 =end
 
-  delete '/crypto/easy-rsa/default/ca.:format' do
+  delete '/crypto/easy-rsa/:pkiname/ca.:format' do
+    easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
+    ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:pkiname]
     msg = OnBoard::System::Command.run <<EOF
 cd #{OnBoard::Crypto::EasyRSA::SCRIPTDIR}
-export KEY_DIR=#{OnBoard::Crypto::EasyRSA::KEYDIR}
+export KEY_DIR=#{easyrsa_pki.keydir}
 ./clean-all
 EOF
-    FileUtils.rm OnBoard::Crypto::SSL::CACERT
-    FileUtils.rm OnBoard::Crypto::SSL::CAKEY
+    FileUtils.rm ssl_pki.cacertpath
+    FileUtils.rm ssl_pki.cakeypath
 
-    redirection = "/crypto/easy-rsa.#{params['format']}"
+    redirection = "/crypto/easy-rsa/#{params[:pkiname]}.#{params['format']}"
     status(303)                       # HTTP "See Other"
     headers('Location' => redirection)
     format(
       :path     => '/303',
-      :format   => params['format'],
-      :title    => 'SSL keys and certificates'
+      :format   => params[:format],
+      :title    => 'SSL keys and certificates: PKI: ' + params[:pkiname]
     )
   end
 
