@@ -11,21 +11,20 @@ class OnBoard
       module Multi
 
         SUBDIR = SSL::Multi::SUBDIR
+        DATADIR = File.join EasyRSA::DATADIR, SUBDIR
+        DEFAULTPKIDIR = File.join DATADIR, 'default'
 
         class << self
           def handle_legacy
+            SSL::Multi.handle_legacy
+            unless File.exists? DEFAULTPKIDIR
+              FileUtils.ln_s '..', DEFAULTPKIDIR
+            end
           end
           def add_pki(pkiname)
-            pki = PKI.new(pkiname)
-            pki.mkdir
+            mkdir(pkiname)
           end
-        end
-
-        class PKI
-          def initialize(name)
-            @name = name
-          end
-          def mkdir
+          def mkdir(pkiname)
             FileUtils.mkdir_p File.join SSL::DATADIR, Multi::SUBDIR, @name
             FileUtils.mkdir_p File.join EasyRSA::DATADIR, Multi::SUBDIR, @name
           end

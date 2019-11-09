@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'erb'
 require 'openssl'
 require 'facets/hash'
@@ -10,9 +11,13 @@ class OnBoard
 
         SUBDIR = '__multipki__'
         DATADIR = File.join SSL::DATADIR, SUBDIR
+        DEFAULTPKIDIR = File.join DATADIR, 'default'
 
         class << self
           def handle_legacy
+            unless File.exists? DEFAULTPKIDIR
+              FileUtils.ln_s '..', DEFAULTPKIDIR
+            end
           end
 
           def get_pkis
