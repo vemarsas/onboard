@@ -49,7 +49,7 @@ class OnBoard::Controller < Sinatra::Base
       :module   => 'easy-rsa',
       :path     => '/crypto/easy-rsa',
       :format   => params[:format],
-      :objects  => OnBoard::Crypto::SSL.getAll(),
+      :objects  => OnBoard::Crypto::SSL.getAll(params[:pkiname]),
       :title    => 'SSL keys and certificates'
     )
   end
