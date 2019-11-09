@@ -1,43 +1,69 @@
 require 'fileutils'
+require 'onboard/crypto/ssl'
+require 'onboard/crypto/ssl/multi'
+require 'onboard/crypto/easy-rsa/ca'
+require 'onboard/crypto/easy-rsa/cert'
 
 class OnBoard
   module Crypto
-
-    autoload :SSL, 'onboard/crypto/ssl'
-
     module EasyRSA
-
-      autoload :CA,   'onboard/crypto/easy-rsa/ca'
-      autoload :Cert, 'onboard/crypto/easy-rsa/cert'
 
       SCRIPTDIR = OnBoard::ROOTDIR + '/modules/easy-rsa/easy-rsa/2.0'
       DATADIR = OnBoard::RWDIR + '/var/lib/crypto/easy-rsa'
-      KEYDIR = DATADIR + '/keys'
-      CRL = KEYDIR + '/crl.pem'
+
+      module Multi
+
+        SUBDIR = SSL::Multi::SUBDIR
+        DATADIR = File.join EasyRSA::DATADIR, SUBDIR
+        DEFAULTPKIDIR = File.join DATADIR, 'default'
+
+        class << self
+          def handle_legacy
+            SSL::Multi.handle_legacy
+            unless File.exists? DEFAULTPKIDIR
+              FileUtils.ln_s '..', DEFAULTPKIDIR
+            end
+          end
+          def add_pki(pkiname)
+            mkdir(pkiname)
+          end
+          def mkdir(pkiname)
+            FileUtils.mkdir_p File.join SSL::DATADIR, Multi::SUBDIR, @name
+            FileUtils.mkdir_p File.join EasyRSA::DATADIR, Multi::SUBDIR, @name
+          end
+        end
+
+      end
 
       class PKI
+        @@dh_mutexes = {} unless class_variable_defined? :@@dh_mutexes
+
         def initialize(name)
           @name = name
-          @dh_mutexes = {}
+          @sslpki = SSL::PKI.new(name)
         end
 
         # Mutual exclusion for threads creating Diffie-Hellman parameters
         def dh_mutex(n)
-          @dh_mutexes[n] = Mutex.new unless @dh_mutexes[n]
-          return @dh_mutexes[n]
+          @@dh_mutexes[n] = Mutex.new unless @@dh_mutexes[n]
+          return @@dh_mutexes[n]
         end
 
         def datadir
-          File.join DATADIR, @name
+          File.join DATADIR, Multi::SUBDIR, @name
         end
         def keydir
-          File.join datadir, @name
+          File.join datadir, 'keys'
         end
+        # CRL did not work even with single PKI...
+        #def clrpath
+        #  keydir + '/ca/crl.pem'
+        #end
 
         def create_dh(n)
           FileUtils.mkdir_p keydir unless Dir.exists? keydir
           build_dh = 'build-dh'
-          if n.respond_to? :to_i and n.to_i > 2048
+          if n.respond_to? :to_i and n.to_i > 1024
             build_dh = 'build-dh.dsaparam'  # faster
           end
           System::Command.run <<EOF
@@ -47,9 +73,44 @@ export KEY_DIR=#{keydir}
 export KEY_SIZE=#{n}
 ./#{build_dh}
 EOF
-          sslpki = SSL::PKI.new @name
-          FileUtils.mkdir_p sslpki.datadir unless Dir.exists? sslpki::datadir
-          FileUtils.cp(keydir + '/dh' + n.to_s + '.pem', sslpki.datadir)
+          FileUtils.mkdir_p @sslpki.datadir unless Dir.exists? @sslpki.datadir
+          FileUtils.cp(keydir + '/dh' + n.to_s + '.pem', @sslpki.datadir)
+        end
+
+        def getAllDH
+          dh_h = {}
+          n = nil
+          SSL::KEY_SIZES.each do |n|
+            dh_file = "dh#{n}.pem"
+            dh_file_fullpath = File.join(datadir, dh_file)
+            dh_h[dh_file] = {} unless dh_h[dh_file]
+            if @@dh_mutexes[n] and @@dh_mutexes[n].respond_to? :locked?
+              dh_h[dh_file]['being_created'] = @@dh_mutexes[n].locked?
+            else
+              dh_h[dh_file]['being_created'] = false
+            end
+            begin
+              dh_h[dh_file]['size'] =
+                  dh(dh_file_fullpath).params['p'].to_i.to_s(2).length
+            rescue NoMethodError
+              dh_h[dh_file]['err'] = 'no valid data'
+            end
+          end
+          return dh_h
+        end
+
+        def getAll
+          h = {}
+          h['dh'] = getAllDH()
+          begin
+            @our_CA = OpenSSL::X509::Certificate.new(File.read @sslpki.cacertpath)
+            h['ca'] = @our_CA.to_h
+          rescue Errno::ENOENT
+          rescue OpenSSL::X509::CertificateError
+            h['ca'] = {'err' => $!}
+          end
+          h['certs'] = @sslpki.getAllCerts()
+          return h
         end
       end
     end

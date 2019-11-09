@@ -213,19 +213,22 @@
     <li>
       Full Hystory of issued certificates: <a href="/crypto/easy-rsa/ca/index.txt"><code>index.txt</code></a>
     </li>
+    <!-- CRL did not work even with single PKI... -->
+    <!--
     <li>
       Certificate Revocation List:
-      <% if File.exists? OnBoard::Crypto::EasyRSA::CRL %>
+      <%# if File.exists? OnBoard::Crypto::EasyRSA::CRL %>
         <a title="CRL in PEM format" href="/crypto/easy-rsa/ca/crl.pem">
           <code>crl.pem</code>
         </a>,
         <a title="CRL in DER format" href="/crypto/easy-rsa/ca/crl.der">
           <code>crl.der</code>
         </a>
-      <% else %>
+      <%# else %>
         <code class="lowlight" title="No certificate has been revoked.">crl.pem</code>
-      <% end %>
+      <%# end %>
     </li>
+    -->
   </ul>
 <% end %>
 

@@ -6,7 +6,6 @@ require 'sinatra/base'
 
 require 'onboard/system/command'
 require 'onboard/crypto/easy-rsa'
-require 'onboard/crypto/easy-rsa/multi'
 require 'onboard/crypto/ssl'
 require 'onboard/crypto/ssl/multi'
 require 'onboard/crypto/ssl/pki'
@@ -36,7 +35,7 @@ class OnBoard::Controller < Sinatra::Base
   end
 
   get '/crypto/easy-rsa/:pkiname.:format' do
-    ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:name]
+    ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:pkiname]
     easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
     # create Diffie-Hellman params if they don't exist
     OnBoard::Crypto::SSL::KEY_SIZES.each do |n|
@@ -53,7 +52,7 @@ class OnBoard::Controller < Sinatra::Base
       :module   => 'easy-rsa',
       :path     => '/crypto/easy-rsa',
       :format   => params[:format],
-      :objects  => ssl_pki.getAll(),
+      :objects  => easyrsa_pki.getAll(),
       :title    => 'SSL keys and certificates'
     )
   end

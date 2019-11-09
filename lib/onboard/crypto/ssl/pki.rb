@@ -18,7 +18,11 @@ class OnBoard
         end
 
         def datadir
-          OnBoard::Crypto::SSL::DATADIR + OnBoard::Crypto::SSL::Multi::SUBDIR + '/' + @name
+          File.join(
+            OnBoard::Crypto::SSL::DATADIR,
+            OnBoard::Crypto::SSL::Multi::SUBDIR,
+            @name
+          )
         end
         def certdir
           File.join datadir, 'cert'
@@ -31,20 +35,6 @@ class OnBoard
         end
         def cakeypath
           File.join datadir, 'ca/private/ca.key'
-        end
-
-        def getAll
-          h = {}
-          h['dh'] = getAllDH()
-          begin
-            @our_CA = OpenSSL::X509::Certificate.new(File.read cacertpath)
-            h['ca'] = @our_CA.to_h
-          rescue Errno::ENOENT
-          rescue OpenSSL::X509::CertificateError
-            h['ca'] = {'err' => $!}
-          end
-          h['certs'] = getAllCerts()
-          return h
         end
 
         def getAllCerts(opt_h={})
@@ -121,27 +111,7 @@ class OnBoard
           return h
         end
 
-        def getAllDH
-          dh_h = {}
-          n = nil
-          KEY_SIZES.each do |n|
-            dh_file = "dh#{n}.pem"
-            dh_file_fullpath = File.join(datadir, dh_file)
-            dh_h[dh_file] = {} unless dh_h[dh_file]
-            if @dh_mutexes[n] and @dh_mutexes[n].respond_to? :locked?
-              dh_h[dh_file]['being_created'] = @dh_mutexes[n].locked?
-            else
-              dh_h[dh_file]['being_created'] = false
-            end
-            begin
-              dh_h[dh_file]['size'] =
-                  dh(dh_file_fullpath).params['p'].to_i.to_s(2).length
-            rescue NoMethodError
-              dh_h[dh_file]['err'] = 'no valid data'
-            end
-          end
-          return dh_h
-        end
+
 
         def dh(n_or_file)
           dh_ = nil
