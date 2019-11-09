@@ -60,8 +60,9 @@ class OnBoard::Controller < Sinatra::Base
     )
   end
 
-  get '/crypto/easy-rsa/default/ca/index.txt' do
-    index_txt = OnBoard::Crypto::EasyRSA::KEYDIR + '/index.txt'
+  get '/crypto/easy-rsa/:pkiname/ca/index.txt' do
+    easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
+    index_txt = easyrsa_pki.keydir + '/index.txt'
     if File.exists? index_txt
       content_type 'text/plain'
       attachment "index.txt"

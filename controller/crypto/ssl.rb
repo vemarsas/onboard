@@ -1,12 +1,17 @@
-autoload :FileUtils,  'fileutils'
-autoload :OpenSSL,    'onboard/extensions/openssl'
+require 'fileutils'
+
+require 'onboard/extensions/openssl'
+
+require 'onboard/crypto/ssl/pki'
+
 
 class OnBoard
   class Controller
 
     get '/crypto/ssl/:pkiname/ca/ca.crt' do
+      ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:pkiname]
       # decode it, for better human readability (but it's still a valid cert.)
-      c = ::OpenSSL::X509::Certificate.new(File.read(Crypto::SSL::CACERT))
+      c = ::OpenSSL::X509::Certificate.new(File.read(ssl_pki.cacertpath))
       content_type "application/x-x509-ca-cert"
       attachment "ca.crt" # avoid auto-import into browser
       c.to_text + c.to_pem

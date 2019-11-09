@@ -44,7 +44,7 @@
 <h3>Certificates</h3>
 <table>
   <thead><tr>
-      <th title="Certificates issued by our CA will be also added to the Certificate Revocation List">Delete / Revoke</th>
+      <th>Delete / Revoke</th>
     <th>&ldquo;Common Name&rdquo;</th>
     <th>Serial no.</th>
     <th>Issued by:</th>
@@ -82,7 +82,6 @@
           <td><%= cert['cert']['key_size'] %></td>
           <% if cert['private_key'] %>
             <% if cert['private_key']['ok'] %>
-              <!-- <td><%= "<strong>#{i18n.yes}</strong>" %> <small>[<a href="/crypto/ssl/certs/private/<%= name %>.key">download</a>]</small></td> -->
               <td style="text-align:center"><a class="img" title="Download" href="/crypto/ssl/<%= params[:pkiname] %>/certs/private/<%= name %>.key"><img style="vertical-align:middle;" alt="download" src="<%= icondir %>/<%= iconsize %>/actions/document-save-as.png"/></a></td>
             <% else %>
               <td class="error"><code><%= escape_html cert['private_key']['err'] %></code></td>
@@ -212,10 +211,10 @@
   <h4>Downloads</h4>
   <ul>
     <li>
-      CA Certificate: <a href="/crypto/ssl/ca/ca.crt"><code>ca.crt</code></a>
+      CA Certificate: <a href="/crypto/ssl/<%= params[:pkiname] %>/ca/ca.crt"><code class="superhighlight">ca.crt</code></a>
     </li>
     <li>
-      Full Hystory of issued certificates: <a href="/crypto/easy-rsa/ca/index.txt"><code>index.txt</code></a>
+      Full Hystory of issued certificates: <a href="/crypto/easy-rsa/<%= params[:pkiname] %>/ca/index.txt"><code class="superhighlight">index.txt</code></a>
     </li>
     <!-- CRL did not work even with single PKI... -->
     <!--
