@@ -79,17 +79,18 @@ class OnBoard
     post '/crypto/ssl/:pkiname/certs.:format' do
       target = nil
       msg = {:ok => true}
+      ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:pkiname]
       if params['certificate'].respond_to? :[]
         begin
           cert = OpenSSL::X509::Certificate.new(
               params['certificate'][:tempfile].read
           )
           cn = cert.to_h['subject']['CN']
-          raise Crypto::SSL::ArgumentError,
+          raise OnBoard::Crypto::SSL::PKI::ArgumentError,
               'Cannot find subject\'s Common Name' if not cn
-          cn_escaped = cn.gsub('/', Crypto::SSL::SLASH_FILENAME_ESCAPE)
-          FileUtils.mkdir_p Crypto::SSL::CERTDIR
-          target = "#{Crypto::SSL::CERTDIR}/#{cn_escaped}.crt"
+          cn_escaped = cn.gsub('/', Crypto::SSL::PKI::SLASH_FILENAME_ESCAPE)
+          FileUtils.mkdir_p ssl_pki.certdir
+          target = "#{ssl_pki.certdir}/#{cn_escaped}.crt"
           if File.readable? target # already exists
             begin # check if it's valid
               OpenSSL::X509::Certificate.new(File.read target)
@@ -112,14 +113,14 @@ class OnBoard
               f.write cert.to_s # the certificate itself between BEGIN-END tags
             end
           end
-        rescue OpenSSL::X509::CertificateError, Crypto::SSL::ArgumentError
+        rescue OpenSSL::X509::CertificateError, Crypto::SSL::PKI::ArgumentError
           status(400)
           msg = {:ok => false, :err => $!}
         end
         if params['private_key'].respond_to? :[]
           # priv. key verification is not done here...
-          FileUtils.mkdir_p Crypto::SSL::KEYDIR
-          File.open("#{Crypto::SSL::KEYDIR}/#{cn}.key", 'w') do |f|
+          FileUtils.mkdir_p ssl_pki.keydir
+          File.open("#{ssl_pki.keydir}/#{cn}.key", 'w') do |f|
             f.write File.read params['private_key'][:tempfile]
           end
           params['private_key'][:tempfile].unlink
@@ -141,7 +142,8 @@ class OnBoard
       )
     end
 
-    # CRL upload
+=begin
+    # CRL upload: buggy since single-PKI versions
     post '/crypto/ssl/:pkiname/CRLs.:format' do
       target = nil
       msg = {:ok => true}
@@ -186,6 +188,7 @@ class OnBoard
         :msg      => msg
       )
     end
+=end
 
   end
 end
