@@ -14,7 +14,6 @@ class OnBoard
 
         def initialize(name)
           @name = name
-          @dh_mutexes = {}
           @our_CA = nil
         end
 
@@ -32,12 +31,6 @@ class OnBoard
         end
         def cakeypath
           File.join datadir, 'ca/private/ca.key'
-        end
-
-        # Mutual exclusion for threads creating Diffie-Hellman parameters
-        def dh_mutex(n)
-          @dh_mutexes[n] = Mutex.new unless @dh_mutexes[n]
-          return @dh_mutexes[n]
         end
 
         def getAll

@@ -36,13 +36,14 @@ class OnBoard::Controller < Sinatra::Base
   end
 
   get '/crypto/easy-rsa/:pkiname.:format' do
-    pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
+    ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:name]
+    easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
     # create Diffie-Hellman params if they don't exist
     OnBoard::Crypto::SSL::KEY_SIZES.each do |n|
       Thread.new do
-        pki.dh_mutex(n).synchronize do
-          unless pki.dh_exists?(n)
-            pki.create_dh(n)
+        easyrsa_pki.dh_mutex(n).synchronize do
+          unless ssl_pki.dh_exists?(n)
+            easyrsa_pki.create_dh(n)
           end
         end
       end
@@ -52,7 +53,7 @@ class OnBoard::Controller < Sinatra::Base
       :module   => 'easy-rsa',
       :path     => '/crypto/easy-rsa',
       :format   => params[:format],
-      :objects  => pki.getAll(),
+      :objects  => ssl_pki.getAll(),
       :title    => 'SSL keys and certificates'
     )
   end

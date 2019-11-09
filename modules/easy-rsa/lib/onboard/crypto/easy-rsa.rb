@@ -18,6 +18,13 @@ class OnBoard
       class PKI
         def initialize(name)
           @name = name
+          @dh_mutexes = {}
+        end
+
+        # Mutual exclusion for threads creating Diffie-Hellman parameters
+        def dh_mutex(n)
+          @dh_mutexes[n] = Mutex.new unless @dh_mutexes[n]
+          return @dh_mutexes[n]
         end
 
         def datadir
@@ -27,7 +34,7 @@ class OnBoard
           File.join datadir, @name
         end
 
-        def self.create_dh(n)
+        def create_dh(n)
           FileUtils.mkdir_p keydir unless Dir.exists? keydir
           build_dh = 'build-dh'
           if n.respond_to? :to_i and n.to_i > 2048
