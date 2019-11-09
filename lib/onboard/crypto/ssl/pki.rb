@@ -12,6 +12,8 @@ class OnBoard
         class ArgumentError < ::ArgumentError; end
         class Conflict < ::RuntimeError; end
 
+        attr_reader :name
+
         def initialize(name)
           @name = name
           @ca = nil
@@ -47,6 +49,13 @@ class OnBoard
             @cadata = {'err' => $!}
           end
           return @cadata
+        end
+
+        def has_certs?
+          num_certs > 0
+        end
+        def num_certs
+          Dir.glob("#{certdir}/*.crt").size
         end
 
         def getAllCerts(opt_h={})

@@ -2,7 +2,9 @@
   require 'onboard/crypto/easy-rsa'
   require 'onboard/crypto/ssl'
 
-  pkinames = objects - ['external']
+  custom_pki_names = objects - ['external', 'defaults']
+  custom_pkis = custom_pki_names.map{|pkiname| OnBoard::Crypto::SSL::PKI.new(pkiname)}
+  default_pki = OnBoard::Crypto::SSL::PKI.new('default')
 %>
 
 <h2><%= title %></h2>
@@ -11,17 +13,19 @@
   <thead>
     <tr>
       <th>PKI</th>
+      <th style="width: 2em">Num. certificates</th>
     </tr>
   </thead>
   <tbody>
-    <% pkinames.each do |pkiname| %>
-      <% next if pkiname == 'default' %>
+    <% custom_pkis.each do |pki| %>
       <tr>
-        <td><a href="easy-rsa/<%= pkiname %>.html"> <%= pkiname %></a></td>
+        <td><a href="easy-rsa/<%= pki.name %>.html"> <%= pki.name %></a></td>
+        <td class="num"><%= pki.num_certs %></td>
       </tr>
     <% end %>
     <tr>
       <td><a href="easy-rsa/default.html" style="font-style:italic">Default PKI</a></td>
+      <td class="num"><%= default_pki.num_certs %></td>
     </tr>
     <tr>
       <td>
@@ -29,6 +33,7 @@
           <button type="submit">(Add new!)</button> <input type="text" name="pkiname"/> 
         </form>
       </td>
+      <td></td>
     <tr>
   </tbody>
 </table>
