@@ -69,7 +69,7 @@
         <% if cert['cert']['err'] and not cert['cert']['ok'] %>
           <td colspan="0" class="error">Certificate Error for &ldquo;<code><%= name %>.crt</code>&rdquo;: <code><%= cert['cert']['err'] %></code></td>
         <% else %>
-          <td><a title="Click to download the certificate" href="/crypto/ssl/certs/<%= Rack::Utils.escape name %>.crt"><code><%= cert['cert']['subject']['CN'] %></code></a></td>
+          <td><a title="Click to download the certificate" href="/crypto/ssl/<%= params[:pkiname] %>/certs/<%= Rack::Utils.escape name %>.crt"><code><%= cert['cert']['subject']['CN'] %></code></a></td>
           <td style="text-align: right;"><code><%= cert['cert']['serial'].to_byte_s %></code></td>
           <td><%= '<strong class="superhighlight" title="Signed by our internal Certificate Authority">' if cert['signed_by_our_CA'] %><%= cert['cert']['issuer']['CN'] %><%= '</strong>' if cert['signed_by_our_CA'] %></td>
           <td>

@@ -71,6 +71,8 @@ class OnBoard::Controller < Sinatra::Base
     end
   end
 
+=begin
+  # CRL buggy even with single PKI
   get '/crypto/easy-rsa/default/ca/crl.:sslformat' do
     # CRL is stored in PEM format
     crl_pem = OnBoard::Crypto::EasyRSA::KEYDIR + '/crl.pem'
@@ -92,6 +94,7 @@ class OnBoard::Controller < Sinatra::Base
       not_found # TODO: more exception handling
     end
   end
+=end
 
   delete '/crypto/easy-rsa/default/ca.:format' do
     msg = OnBoard::System::Command.run <<EOF

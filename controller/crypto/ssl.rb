@@ -13,7 +13,10 @@ class OnBoard
     end
 
     get '/crypto/ssl/:pkiname/certs/:name.crt' do
-      certfile = "#{Crypto::SSL::CERTDIR}/#{params[:name]}.crt"
+      pkiname = params[:pkiname]
+      certname = params[:name]
+      ssl_pki = Crypto::SSL::PKI.new(pkiname)
+      certfile = "#{ssl_pki.certdir}/#{certname}.crt"
       if File.exists? certfile
         c = ::OpenSSL::X509::Certificate.new(File.read(certfile))
         if c.ca?
@@ -23,7 +26,7 @@ class OnBoard
               # What is the correct MIME-type for an X509 cert. which is NOT
               # a CA?
         end
-        attachment "#{params[:name]}.crt"
+        attachment "#{certname}.crt"
         c.to_text + c.to_pem
       else
         not_found
