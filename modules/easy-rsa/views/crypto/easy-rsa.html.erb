@@ -52,7 +52,7 @@
     <th>Key size (bits)</th>
     <th>Private Key?</th>
     <th title="Is a Certificate Authority?">Cert. Auth.?</th>
-    <th title="Certificate Revocation List">CRL</th>
+    <!-- <th title="Certificate Revocation List">CRL</th> -->  <!-- CRL has been buggy even on single PKI -->
     <th>SSL Server?</th>
   </tr></thead>
   <tbody>
@@ -97,6 +97,9 @@
               <img style="vertical-align:middle;" alt="<%= i18n.yes %>" src="<%= icondir %>/<%= iconsize %>/emblems/emblem-default.png"/>
             <% end %>
           </td>
+          <!-- CRL buggy even on single PKI -->
+          <!--
+          <% if false %>
           <td style="text-align:center;">
             <% if cert['crl'] %>
               <small>
@@ -107,7 +110,8 @@
               </small>
             <% end %>
           </td>
-          <!-- <td><%= cert['cert']['is_server'] ? "<strong>#{i18n.yes}</strong>" : i18n.no %></td> -->
+          <% end %>
+          -->
           <td style="text-align:center;">
             <% if cert['cert']['is_server'] %>
               <img style="vertical-align:middle;" alt="<%= i18n.yes %>" src="<%= icondir %>/<%= iconsize %>/emblems/emblem-default.png"/>
@@ -353,6 +357,9 @@
   </form>
 </div>
 
+<!-- CRL has been buggy even with sinelge PKI  -->
+<!--
+<% if false %>
 <div style="width:48%; float:right;">
   <form method="POST" action="/crypto/ssl/<%= pkiname %>/CRLs.html" enctype="multipart/form-data">
     <input type="hidden" name="file_upload" value="yes"/>
@@ -365,3 +372,5 @@
     <button type="submit">Upload!</button>
   </form>
 </div>
+<% end %>
+-->
