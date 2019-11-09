@@ -82,7 +82,7 @@ EOF
           n = nil
           SSL::KEY_SIZES.each do |n|
             dh_file = "dh#{n}.pem"
-            dh_file_fullpath = File.join(datadir, dh_file)
+            dh_file_fullpath = File.join(@sslpki.datadir, dh_file)
             dh_h[dh_file] = {} unless dh_h[dh_file]
             if @@dh_mutexes[n] and @@dh_mutexes[n].respond_to? :locked?
               dh_h[dh_file]['being_created'] = @@dh_mutexes[n].locked?
@@ -91,9 +91,9 @@ EOF
             end
             begin
               dh_h[dh_file]['size'] =
-                  dh(dh_file_fullpath).params['p'].to_i.to_s(2).length
+                  @sslpki.dh(dh_file_fullpath).params['p'].to_i.to_s(2).length
             rescue NoMethodError
-              dh_h[dh_file]['err'] = 'no valid data'
+              dh_h[dh_file]['err'] = 'no valid data: ' + $!.message
             end
           end
           return dh_h
