@@ -10,3 +10,7 @@
 <% pkis.each do |pki| %>
   <a href="easy-rsa/<%= pki %>.html"> <%= pki %></a>
 <% end %>
+
+<form method="POST">
+  <input type="text" name="pkiname"/> <button type="submit">Add new!</button>
+</form>

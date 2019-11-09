@@ -22,6 +22,17 @@ class OnBoard::Controller < Sinatra::Base
     )
   end
 
+  post '/crypto/easy-rsa.:format' do
+    OnBoard::Crypto::EasyRSA::Multi.add_pki(params['pkiname'])
+    format(
+      :module   => 'easy-rsa',
+      :path     => '/crypto/easy-rsa/multi',
+      :format   => params[:format],
+      :objects  => OnBoard::Crypto::SSL::Multi.get_pkis(),
+      :title    => 'Public Key Infrastructures (PKIs)'
+    )
+  end
+
   get '/crypto/easy-rsa/:pkiname.:format' do
     # create Diffie-Hellman params if they don't exist
     OnBoard::Crypto::SSL::KEY_SIZES.each do |n|
