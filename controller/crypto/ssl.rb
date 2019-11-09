@@ -33,6 +33,8 @@ class OnBoard
       end
     end
 
+=begin
+    # CRL support has been buggy on single PKI too...
     get '/crypto/ssl/:pkiname/CRLs/:name.crl.?:sslformat?' do
       params[:sslformat] = 'pem' unless params[:sslformat]
       crlfile = "#{Crypto::SSL::CERTDIR}/#{params[:name]}.crl"
@@ -55,9 +57,10 @@ class OnBoard
         not_found
       end
     end
+=end
 
     get '/crypto/ssl/:pkiname/certs/private/:name.key' do
-      keyfile = "#{Crypto::SSL::KEYDIR}/#{params[:name]}.key"
+      keyfile = "#{OnBoard::Crypto::SSL::PKI.new(params[:pkiname]).keydir}/#{params[:name]}.key"
       if File.exists? keyfile
         content_type "application/x-pem-key"
         attachment "#{params[:name]}.key"
