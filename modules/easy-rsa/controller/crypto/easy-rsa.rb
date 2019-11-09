@@ -165,24 +165,25 @@ EOF
 
   # A WebService client does not need an entity-body (headers and Status
   # will suffice), so html is fine as well, since it will be ignored...
-  delete '/crypto/easy-rsa/default/certs/:name.crt' do
+  delete '/crypto/easy-rsa/:pkiname/certs/:name.crt' do
+    pkiname = params[:pkiname]
+    certname = params[:name]
     msg = {:ok => true}
-    certfile = "#{OnBoard::Crypto::SSL::CERTDIR}/#{params[:name]}.crt"
-    keyfile = "#{OnBoard::Crypto::SSL::CERTDIR}/private/#{params[:name]}.key"
-    certfile_easyrsa =
-        "#{OnBoard::Crypto::EasyRSA::KEYDIR}/#{params[:name]}.crt"
-    keyfile_easyrsa =
-      "#{OnBoard::Crypto::EasyRSA::KEYDIR}/#{params[:name]}.key"
-    csr_easyrsa =
-      "#{OnBoard::Crypto::EasyRSA::KEYDIR}/#{params[:name]}.csr"
+    ssl_pki = OnBoard::Crypto::SSL::PKI.new(pkiname)
+    easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new(pkiname)
+    certfile = File.join ssl_pki.certdir, "#{certname}.crt"
+    keyfile = File.join ssl_pki.certdir, 'private', "#{certname}.key"
+    certfile_easyrsa = File.join easyrsa_pki.keydir, "#{certname}.crt"
+    keyfile_easyrsa = File.join easyrsa_pki.keydir, "#{certname}.key"
+    csr_easyrsa = File.join easyrsa_pki.keydir, "#{certname}.csr"
 
     if File.exists? certfile_easyrsa
       msg = OnBoard::System::Command.run <<EOF
 cd #{OnBoard::Crypto::EasyRSA::SCRIPTDIR}
 . ./vars
-export CACERT=#{OnBoard::Crypto::SSL::CACERT}
-export CAKEY=#{OnBoard::Crypto::SSL::CAKEY}
-./revoke-full "#{params['name']}"
+export CACERT=#{ssl_pki.cacertpath}
+export CAKEY=#{ssl_pki.cakeypath}
+./revoke-full "#{certname}"
 EOF
     end
     [
