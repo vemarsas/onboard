@@ -28,8 +28,8 @@ class OnBoard
             mkdir(pkiname)
           end
           def mkdir(pkiname)
-            FileUtils.mkdir_p File.join SSL::DATADIR, Multi::SUBDIR, @name
-            FileUtils.mkdir_p File.join EasyRSA::DATADIR, Multi::SUBDIR, @name
+            FileUtils.mkdir_p File.join SSL::DATADIR, Multi::SUBDIR, pkiname
+            FileUtils.mkdir_p File.join EasyRSA::DATADIR, Multi::SUBDIR, pkiname
           end
         end
 
