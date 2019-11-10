@@ -39,6 +39,9 @@ class OnBoard
         def cakeypath
           File.join datadir, 'ca/private/ca.key'
         end
+        def exists?
+          Dir.exists? datadir
+        end
 
         def get_cadata!
           begin
