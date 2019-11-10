@@ -13,11 +13,12 @@
     <tr>
       <th>PKI</th>
       <th style="width: 1em">Num. certificates</th>
+      <th>Delete? <div class="optinfo">PKI containing certificates<br/>cannot be deleted.</div></th>
     </tr>
   </thead>
   <tbody>
     <% pkis.each do |pki| %>
-      <tr>
+      <tr style="height: 3em">
         <%
           displayname = case pki.name
           when 'default'
@@ -36,6 +37,14 @@
           end
         %>
         <td class="num"><%= displaynum %></td>
+        <td style="text-align: center">
+          <% unless pki.has_certs? or pki.name == 'default' %>
+            <form method="POST" action="easy-rsa/<%= pki.name %>.html">
+              <input type="hidden" name="_method" value="delete">
+              <%= action_button :delete %>
+            </form>
+          <% end %>
+        </td>
       </tr>
     <% end %>
     <tr>
@@ -44,6 +53,7 @@
           <button type="submit">(Add new!)</button> <input type="text" name="pkiname"/> 
         </form>
       </td>
+      <td></td>
       <td></td>
     <tr>
   </tbody>
