@@ -21,6 +21,7 @@ require 'onboard/extensions/ipaddr'
 require 'onboard/extensions/openssl'
 
 require 'onboard/system/process'
+require 'onboard/crypto/ssl/pki'
 require 'onboard/network/interface'
 require 'onboard/network/routing/table'
 require 'onboard/network/openvpn/convert'
@@ -367,6 +368,7 @@ EOF
           }
           @data = {'running' => h[:running]}
           @data['uuid'] = uuid unless @data['uuid']
+          @data['pkiname'] = h[:pkiname]
           parse_conffile() if File.file? @data_internal['conffile'] # regular
           parse_conffile(:text => cmdline2conf())
           if @data['server']
@@ -724,8 +726,10 @@ address#port # 'port' was not a comment (for example, dnsmasq config files)
 
             %w{ca cert}.each do |optname|
               if line =~ /^\s*#{optname}\s+(\S.*\S)\s*$/
-                  # match filenames containing spaces
-                if file = find_file($1)
+                # match filenames containing spaces
+                filepath = $1
+                @data['pkiname'] = Crypto::SSL::PKI.guess_pkiname :filepath => filepath
+                if file = find_file(filepath)
                   begin
                     c = OpenSSL::X509::Certificate.new(File.read file)
                     @data_internal[optname] = c

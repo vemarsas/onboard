@@ -20,6 +20,12 @@ class OnBoard
           Multi.get_pki_names.map{|pkiname| self.new(pkiname)}
         end
 
+        def self.guess_pkiname(h)
+          if h[:filepath] =~ %r{#{Multi::SUBDIR}/([^/]+)/}
+            return $1
+          end
+        end
+
         attr_reader :name, :ca, :cadata
 
         def initialize(name)
