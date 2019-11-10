@@ -166,6 +166,10 @@ class OnBoard
         # vpn instance, to generate the config file content, so changes to this method require
         # re-creation to be effective.
         def self.start_from_HTTP_request(params, opt_h={:conffile => :auto})
+          params['pki'] = 'default' unless params['pki']
+          ssl_pky = Crypto::SSL::PKI.new params['pki']
+          easyrsa_pki = Crypto::EasyRSA::PKI.new params['pki']
+
           uuid = UUID.generate
           config_dir = "#{CONFDIR}/#{uuid}"
           reserve_a_tcp_port = TCPServer.open('127.0.0.1', 0)
@@ -194,23 +198,25 @@ class OnBoard
           cmdline << '--status-version' << '2'
           cmdline << '--ca' << case params['ca']
               when '__default__'
-                Crypto::SSL::CACERT
+                ssl_pky.cacertpath
               else
-                "'#{Crypto::SSL::CERTDIR}/#{params['ca']}.crt'"
+                "'#{ssl_pky.certdir}/#{params['ca']}.crt'"
               end
           cmdline << '--cert' <<
-              "'#{Crypto::SSL::CERTDIR}/#{params['cert']}.crt'"
-          keyfile = "#{Crypto::SSL::KEYDIR}/#{params['cert']}.key"
+              "'#{ssl_pky.certdir}/#{params['cert']}.crt'"
+          keyfile = "#{ssl_pky.keydir}/#{params['cert']}.key"
           key = OpenSSL::PKey::RSA.new File.read keyfile
-          dh = "#{Crypto::SSL::DIR}/dh#{key.size}.pem"
+          dh = "#{ssl_pky.datadir}/dh#{key.size}.pem"
           cmdline << '--key' << "'#{keyfile}'"
-          crlfile = case params['ca']
-          when '__default__'
-            Crypto::EasyRSA::CRL
-          else
-            "'#{Crypto::SSL::CERTDIR}/#{params['ca']}.crl'"
-          end
-          cmdline << '--crl-verify' << crlfile if File.exists? crlfile
+
+          # CRL feature has been buggy even with single PKI...
+          # crlfile = case params['ca']
+          # when '__default__'
+          #   Crypto::EasyRSA::CRL
+          # else
+          #   "'#{ssl_pky.certdir}/#{params['ca']}.crl'"
+          # end
+          # cmdline << '--crl-verify' << crlfile if File.exists? crlfile
 
           # TLS opts which may be useful for compat w/ older peers
           if params['tls-version-min'] =~ /\S/
@@ -594,8 +600,9 @@ EOF
           data['routes'] = ary
         end
 
-        def find_client_certificates(opts={})
-          Crypto::SSL::getAllCerts(opts).select do |key, value| #Facets
+        def find_client_certificates_from_pki(pkiname, opts={})
+          ssl_pki = Crypto::SSL::PKI.new(pkiname)
+          ssl_pki.getAllCerts(opts).select do |key, value| #Facets
             cert = value['cert']
             cert['issuer'] == data['ca']['subject'] and not
             cert['subject'] == data['cert']['subject']

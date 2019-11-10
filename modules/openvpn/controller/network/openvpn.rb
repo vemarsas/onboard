@@ -32,9 +32,12 @@ class OnBoard
     end
 
     post '/network/openvpn.:format' do
+      params['pki'] = 'default' unless params['pki'] =~ /\S/
+      params['pki'].strip!
       msg = {:ok => true}
       vpns = OnBoard::Network::OpenVPN::VPN.getAll()
-      certfile = "#{Crypto::SSL::CERTDIR}/#{params['cert']}.crt"
+      ssl_pki = Crypto::SSL::PKI.new params['pki']
+      certfile = "#{ssl_pki.certdir}/#{params['cert']}.crt"
 
       begin
         certobj = OpenSSL::X509::Certificate.new(File.read certfile)
