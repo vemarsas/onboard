@@ -4,8 +4,16 @@
   require 'onboard/crypto/ssl'
   require 'onboard/network/bridge'
 
-  ssl     = OnBoard::Crypto::SSL.getAll
-  bridges = OnBoard::Network::Bridge.get_all
+  pki_names = OnBoard::Crypto::SSL::Multi.get_pki_names
+  pki_data = {}
+  pki_names.each do |pkiname|
+    pki = OnBoard::Crypto::SSL::PKI.new(pkiname)
+    pki_data[pkiname] = pki.getAllCerts :with_ca => true
+  end
+
+  pp pki_data
+
+  bridges   = OnBoard::Network::Bridge.get_all
 %>
 
 <style type="text/css">

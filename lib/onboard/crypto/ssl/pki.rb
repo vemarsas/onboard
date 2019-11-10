@@ -4,6 +4,7 @@ require 'facets/hash'
 
 require 'onboard/extensions/openssl'
 require 'onboard/crypto/ssl'
+require 'onboard/crypto/ssl/multi'
 
 class OnBoard
   module Crypto
@@ -15,7 +16,11 @@ class OnBoard
         class ArgumentError < ::ArgumentError; end
         class Conflict < ::RuntimeError; end
 
-        attr_reader :name
+        def self.get_all
+          Multi.get_pki_names.map{|pkiname| self.new(pkiname)}
+        end
+
+        attr_reader :name, :ca, :cadata
 
         def initialize(name)
           @name = name
@@ -57,7 +62,7 @@ class OnBoard
         def get_cadata!
           begin
             @ca = OpenSSL::X509::Certificate.new(File.read cacertpath)
-            @cadata = @our_CA.to_h
+            @cadata = {'cert' => @ca.to_h}
           rescue Errno::ENOENT
           rescue OpenSSL::X509::CertificateError
             @cadata = {'err' => $!}
@@ -91,7 +96,13 @@ class OnBoard
 
           h = {} # return value
 
-          get_cadata!
+          if opt_h[:with_ca]
+            get_cadata!
+            if @cadata['cert']
+              ca_cn = @cadata['cert']['subject']['CN']
+              h[ca_cn] = @cadata
+            end
+          end
 
           # sugar
           certdir = opt_h[:certs][:dir]

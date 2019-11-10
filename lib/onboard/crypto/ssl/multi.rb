@@ -20,13 +20,14 @@ class OnBoard
             end
           end
 
-          def get_pkis
+          def get_pki_names
             if Dir.exists? DATADIR
               return Dir.entries(DATADIR).select{|entry| entry =~ /^[^\.\s]\S+$/i}
             else
               return []
             end
           end
+          alias get_pkis get_pki_names
         end
 
       end
