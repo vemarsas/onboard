@@ -349,7 +349,7 @@
 <!-- END OWN CA SECTION -->
 
 <!-- BEGIN IMPORT SECTION -->
-<% if %w{external default}.include? params[:pkiname] %>
+<% if %w{external}.include? params[:pkiname] %>
   <h3>Import</h3>
 
   <div style="width:48%; float:left;">
