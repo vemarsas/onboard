@@ -7,6 +7,8 @@
   all_pki_names = OnBoard::Crypto::SSL::Multi.get_pki_names - ['default']
   all_pki_names = ['default'] + all_pki_names
 
+  multi_pkis = (all_pki_names.size  > 1)
+
   params['pki'] ||= 'default'
 
   ssl = {}
@@ -82,7 +84,7 @@
 
 <h3>Create new VPN</h3>
 
-<% if all_pki_names.size > 1 %>
+<% if multi_pkis %>
   <h4>(Choose <a href="../../crypto/easy-rsa.html">alternate PKI)</a></h4>
   <form method="GET">
     <select name="pki" style="width: 8em">
