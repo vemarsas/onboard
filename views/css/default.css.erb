@@ -261,12 +261,6 @@ a:hover, td a:hover code, a:hover code {
   background: <%= highlight %>;
 }
 
-/*
-a:hover .superhighlight {
-  background: <%= superhighlight %>;
-}
-*/
-
 .hmenu-bullet:hover  {
   color: <%= superhighlight %>;
 }
@@ -309,13 +303,13 @@ a.img, a.img:hover, a img  {
   background: transparent;
 }
 
-.superhighlight a {
+.superhighlight a, a .superhighlight {
   color: <%= superhighlight %>;
 }
 
-.superhighlight a:hover {
+.superhighlight a:hover, a:hover .superhighlight {
   color: white;
-  background: <%= superhighlight %>;
+  background: <%= highlight %>;
 }
 
 table {

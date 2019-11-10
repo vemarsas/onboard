@@ -2,9 +2,8 @@
   require 'onboard/crypto/easy-rsa'
   require 'onboard/crypto/ssl'
 
-  custom_pki_names = objects - ['external', 'defaults']
-  custom_pkis = custom_pki_names.map{|pkiname| OnBoard::Crypto::SSL::PKI.new(pkiname)}
-  default_pki = OnBoard::Crypto::SSL::PKI.new('default')
+  pkinames = objects - ['external', 'default'] + ['default']
+  pkis = pkinames.map{|pkiname| OnBoard::Crypto::SSL::PKI.new(pkiname)}
 %>
 
 <h2><%= title %></h2>
@@ -13,20 +12,32 @@
   <thead>
     <tr>
       <th>PKI</th>
-      <th style="width: 2em">Num. certificates</th>
+      <th style="width: 1em">Num. certificates</th>
     </tr>
   </thead>
   <tbody>
-    <% custom_pkis.each do |pki| %>
+    <% pkis.each do |pki| %>
       <tr>
-        <td><a href="easy-rsa/<%= pki.name %>.html"> <%= pki.name %></a></td>
-        <td class="num"><%= pki.num_certs %></td>
+        <%
+          displayname = case pki.name
+          when 'default'
+            '<em>Default PKI</em>'
+          else
+            pki.name
+          end
+        %>
+        <td><a href="easy-rsa/<%= pki.name %>.html"> <%= displayname %></a></td>
+        <%
+          displaynum = case pki.num_certs
+          when 0
+            '<span class="lowlight">&minus;</span>'
+          else
+            pki.num_certs
+          end
+        %>
+        <td class="num"><%= displaynum %></td>
       </tr>
     <% end %>
-    <tr>
-      <td><a href="easy-rsa/default.html" style="font-style:italic">Default PKI</a></td>
-      <td class="num"><%= default_pki.num_certs %></td>
-    </tr>
     <tr>
       <td>
         <form method="POST">

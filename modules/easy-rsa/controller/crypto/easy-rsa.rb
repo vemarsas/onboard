@@ -24,6 +24,8 @@ class OnBoard::Controller < Sinatra::Base
   end
 
   post '/crypto/easy-rsa.:format' do
+    params['pkiname'].strip!
+    params['pkiname'].gsub! /\s/, '_'
     OnBoard::Crypto::EasyRSA::Multi.add_pki(params['pkiname'])
     format(
       :module   => 'easy-rsa',

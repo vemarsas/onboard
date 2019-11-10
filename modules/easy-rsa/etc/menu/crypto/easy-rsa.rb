@@ -8,7 +8,7 @@ end
 class OnBoard
   MENU_ROOT.add_path('/crypto/external', {
     :href => '/crypto/easy-rsa/external',
-    :name => 'External/Imported Certificates and Keys',
+    :name => 'Imported Certificates and Keys',
     #:desc => 'Public Key Infrastructures and own Certificate Authorities',
     :n    => 0
   })

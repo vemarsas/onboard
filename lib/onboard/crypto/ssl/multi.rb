@@ -22,7 +22,7 @@ class OnBoard
 
           def get_pkis
             if Dir.exists? DATADIR
-              return Dir.entries(DATADIR).select{|entry| entry =~ /^[^\.]/i}
+              return Dir.entries(DATADIR).select{|entry| entry =~ /^[^\.\s]\S+$/i}
             else
               return []
             end
