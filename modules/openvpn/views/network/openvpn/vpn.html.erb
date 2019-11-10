@@ -4,14 +4,24 @@
   require 'onboard/crypto/ssl'
   require 'onboard/network/bridge'
 
-  pki_names = OnBoard::Crypto::SSL::Multi.get_pki_names
-  pki_data = {}
-  pki_names.each do |pkiname|
+  all_pki_names = OnBoard::Crypto::SSL::Multi.get_pki_names
+  all_pki_data = {}
+  all_pki_names.each do |pkiname|
     pki = OnBoard::Crypto::SSL::PKI.new(pkiname)
-    pki_data[pkiname] = pki.getAllCerts :with_ca => true
+    all_pki_data[pkiname] = pki.getAllCerts :with_ca => true
   end
 
-  pp pki_data
+  # pp all_pki_data  # DEBUG
+
+  ssl = {}
+  ssl['certs'] = {}
+  # Assumption: CNs are unique globally
+  all_pki_data.each_pair do |pkiname, pkidata|
+    pkidata.each_pair do |cn, certdata|
+      ssl['certs'][cn] = certdata
+      ssl['certs'][cn]['pkiname'] = pkiname
+    end
+  end
 
   bridges   = OnBoard::Network::Bridge.get_all
 %>
