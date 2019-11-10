@@ -99,8 +99,7 @@ class OnBoard
           if opt_h[:with_ca]
             get_cadata!
             if @cadata['cert']
-              ca_cn = @cadata['cert']['subject']['CN']
-              h[ca_cn] = @cadata
+              h['__pki_ca_cert__'] = @cadata
             end
           end
 

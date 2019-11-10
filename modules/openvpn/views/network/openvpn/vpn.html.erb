@@ -167,7 +167,14 @@
             <% end %>
             <% ssl['certs'].each_pair do |name, h| %>
               <% if h['cert']['is_ca'] %>
-                <option value="<%= name %>"><%==  name %></option>
+                <%
+                  begin
+                    displayname = h['cert']['subject']['CN']
+                  rescue NoMethodError
+                    displayname = name
+                  end
+                %>
+                <option value="<%= name %>"><%==  displayname %></option>
               <% end %>
             <% end %>
           </select>
@@ -307,7 +314,14 @@
             <% end %>
             <% ssl['certs'].each_pair do |name, h| %>
               <% if h['cert']['is_ca'] %>
-                <option value="<%= name %>"><%== name %></option>
+                <%
+                  begin
+                    displayname = h['cert']['subject']['CN']
+                  rescue NoMethodError
+                    displayname = name
+                  end
+                %>
+                <option value="<%= name %>"><%== displayname %></option>
               <% end %>
             <% end %>
           </select>

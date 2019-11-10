@@ -197,7 +197,7 @@ class OnBoard
               OpenVPN::STATUS_UPDATE_INTERVAL
           cmdline << '--status-version' << '2'
           cmdline << '--ca' << case params['ca']
-              when '__default__'
+              when '__default__', /^__(\S*[^a-z0-9])?ca\S*__$/i
                 ssl_pky.cacertpath
               else
                 "'#{ssl_pky.certdir}/#{params['ca']}.crt'"
