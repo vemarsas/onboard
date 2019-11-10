@@ -125,7 +125,7 @@ locals automatically provided by format() helper:
         <% if multi_pkis %>
           <td rowspan="<%= rowspan %>">
             <% if vpn.data['pkiname'] =~ /\S/ %>
-              <a href="../crypto/easy-rsa/<%= vpn.data['pkiname'] %>.html"><%= vpn.data['pkiname'] %></a>
+              <a href="/crypto/easy-rsa/<%= vpn.data['pkiname'] %>.html"><%= vpn.data['pkiname'] %></a>
             <% end %>
           </td>
         <% end %>
