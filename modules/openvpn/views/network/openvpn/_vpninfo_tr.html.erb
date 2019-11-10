@@ -3,6 +3,7 @@ locals:
 
   vpn_i:  Array index
   vpn:    VPN object
+  multi_pkis:
 
   show_actions_column:
 
@@ -15,6 +16,7 @@ locals automatically provided by format() helper:
 
 <%
   show_actions_column ||= false # just to avoid NameError
+  multi_pkis ||= false
 %>
 
       <%
@@ -120,9 +122,13 @@ locals automatically provided by format() helper:
         </span></td>
 
         <!-- PKI -->
-        <td rowspan="<%= rowspan %>">
-          <%= vpn.data['pkiname'] %>
-        </td>
+        <% if multi_pkis %>
+          <td rowspan="<%= rowspan %>">
+            <% if vpn.data['pkiname'] =~ /\S/ %>
+              <a href="../crypto/easy-rsa/<%= vpn.data['pkiname'] %>.html"><%= vpn.data['pkiname'] %></a>
+            <% end %>
+          </td>
+        <% end %>
 
         <td><%= vpn.data['local'] or '<div class="lowlight" style="text-align:center;"> * </div>' %></td>
         <td rowspan="<%= rowspan %>"> <!-- *local* port -->
