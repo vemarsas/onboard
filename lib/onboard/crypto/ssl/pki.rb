@@ -23,7 +23,7 @@ class OnBoard
         attr_reader :name, :ca, :cadata
 
         def initialize(name)
-          @name = name
+          @name = name =~ /\S/ ? name : 'default'
           @ca = nil
           @cadata = {}
         end
