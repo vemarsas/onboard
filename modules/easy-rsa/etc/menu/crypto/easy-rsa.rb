@@ -6,15 +6,6 @@ class OnBoard
 end
 
 class OnBoard
-  MENU_ROOT.add_path('/crypto/external', {
-    :href => '/crypto/easy-rsa/external',
-    :name => 'Imported Certificates and Keys',
-    #:desc => 'Public Key Infrastructures and own Certificate Authorities',
-    :n    => 0
-  })
-end
-
-class OnBoard
   MENU_ROOT.add_path('/crypto/easy-rsa', {
     :href => '/crypto/easy-rsa',
     :name => 'Manage PKIs',

@@ -2,7 +2,7 @@
   require 'onboard/crypto/easy-rsa'
   require 'onboard/crypto/ssl'
 
-  pkinames = objects - ['external', 'default'] + ['default']
+  pkinames = objects - ['default'] + ['default']  # move default at end
   pkis = pkinames.map{|pkiname| OnBoard::Crypto::SSL::PKI.new(pkiname)}
 %>
 

@@ -11,7 +11,7 @@ class OnBoard
     module SSL
       class PKI
         SLASH_FILENAME_ESCAPE = '__slash__'
-        SYSTEM_PKIS = %w{default external}
+        SYSTEM_PKIS = %w{default}
 
         class ArgumentError < ::ArgumentError; end
         class Conflict < ::RuntimeError; end

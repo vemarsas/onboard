@@ -36,7 +36,7 @@ class OnBoard
       end
 
       class PKI
-        SYSTEM_PKIS = %w{default external}
+        SYSTEM_PKIS = %w{default}
 
         @@dh_mutexes = {} unless class_variable_defined? :@@dh_mutexes
 
