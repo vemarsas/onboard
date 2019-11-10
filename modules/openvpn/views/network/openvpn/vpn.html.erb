@@ -96,6 +96,7 @@
 
 <h4>Client mode</h4>
 <form method="POST">
+  <input type="hidden" name="pki" value="<%= params['pki'] %>">
   <table>
     <thead>
       <tr>
@@ -243,6 +244,7 @@
 
 <h4>Server mode</h4>
 <form method="POST">
+  <input type="hidden" name="pki" value="<%= params['pki'] %>">
   <table>
     <thead>
       <tr>
