@@ -40,7 +40,7 @@ class OnBoard
         vpn_.data['uuid'] == params['vpn_uuid']
       end
       not_found unless vpn
-      certs = vpn.find_client_certificates_from_pki(params['pki'] || 'default')
+      certs = vpn.find_client_certificates_from_pki(params['pki'] || vpn.data['pkiname'] || 'default')
       objects = {
         :vpn   => vpn,
         :certs => certs
