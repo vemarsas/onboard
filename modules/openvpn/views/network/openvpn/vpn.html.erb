@@ -6,23 +6,6 @@
 
   all_pki_names = OnBoard::Crypto::SSL::Multi.get_pki_names - ['default']
   all_pki_names = ['default'] + all_pki_names
-  # all_pki_data = {}
-  # all_pki_names.each do |pkiname|
-  #   pki = OnBoard::Crypto::SSL::PKI.new(pkiname)
-  #   all_pki_data[pkiname] = pki.getAllCerts :with_ca => true
-  # end
-
-  # # pp all_pki_data  # DEBUG
-
-  # ssl = {}
-  # ssl['certs'] = {}
-  # # Assumption: CNs are unique globally
-  # all_pki_data.each_pair do |pkiname, pkidata|
-  #   pkidata.each_pair do |cn, certdata|
-  #     ssl['certs'][cn] = certdata
-  #     ssl['certs'][cn]['pkiname'] = pkiname
-  #   end
-  # end
 
   params['pki'] ||= 'default'
 
@@ -97,22 +80,21 @@
   </tbody>
 </table>
 
+<h3>Create new VPN</h3>
+
 <% if all_pki_names.size > 1 %>
-  <h3 style="">(Use alternate PKIs)</h3>
-  <% all_pki_names.each do |pkiname| %>
-    <%
-      displayname = pkiname
-      displayname = 'Default' if pkiname == 'default'
-    %>
-    <% if pkiname == params['pki'] %>
-      <span class="superhighlight"><%= displayname %></span>
-    <% else %>
-      <a href="?pki=<%= pkiname %>"><%= displayname %></a>
-    <% end %>
-  <% end %>
+  <h4>(Choose <a href="../../crypto/easy-rsa.html">alternate PKI)</a></h4>
+  <form method="GET">
+    <select name="pki" style="width: 8em">
+      <% all_pki_names.each do |pkiname| %>
+        <option value="<%= pkiname %>" <%= 'selected' if pkiname == params['pki'] %>> <%= pkiname %> </option>
+      <% end %>
+    </select>
+    <button type="submit">Choose PKI!</button>
+  </form>
 <% end %>
 
-<h3>Create new VPN (client mode)</h3>
+<h4>Client mode</h4>
 <form method="POST">
   <table>
     <thead>
@@ -259,7 +241,7 @@
   </table>
 </form>
 
-<h3>Create new VPN (server mode)</h3>
+<h4>Server mode</h4>
 <form method="POST">
   <table>
     <thead>
