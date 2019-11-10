@@ -63,6 +63,16 @@ class OnBoard::Controller < Sinatra::Base
     )
   end
 
+  delete '/crypto/easy-rsa/:pkiname.:format' do
+    easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
+    ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:pkiname]
+    not_found unless easyrsa_pki.exists? or ssl_pki.exists?
+    # TODO: handle errors
+    easyrsa_pki.delete!
+    ssl_pki.delete!
+    redirect File.join request.path_info, "../../easy-rsa.#{params[:format]}"
+  end
+
   get '/crypto/easy-rsa/:pkiname/ca/index.txt' do
     easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
     index_txt = easyrsa_pki.keydir + '/index.txt'

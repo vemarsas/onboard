@@ -1,13 +1,16 @@
 require 'erb'
 require 'openssl'
 require 'facets/hash'
+
 require 'onboard/extensions/openssl'
+require 'onboard/crypto/ssl'
 
 class OnBoard
   module Crypto
     module SSL
       class PKI
         SLASH_FILENAME_ESCAPE = '__slash__'
+        SYSTEM_PKIS = %w{default exeternal}
 
         class ArgumentError < ::ArgumentError; end
         class Conflict < ::RuntimeError; end
@@ -41,6 +44,14 @@ class OnBoard
         end
         def exists?
           Dir.exists? datadir
+        end
+
+        def system?
+          SYSTEM_PKIS.include? @name
+        end
+
+        def delete!
+          FileUtils.rm_r(datadir, :secure => true) unless system?
         end
 
         def get_cadata!

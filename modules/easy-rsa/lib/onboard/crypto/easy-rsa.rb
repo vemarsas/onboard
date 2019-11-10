@@ -36,6 +36,8 @@ class OnBoard
       end
 
       class PKI
+        SYSTEM_PKIS = %w{default external}
+
         @@dh_mutexes = {} unless class_variable_defined? :@@dh_mutexes
 
         def initialize(name)
@@ -55,10 +57,14 @@ class OnBoard
         def keydir
           File.join datadir, 'keys'
         end
-        # CRL did not work even with single PKI...
-        #def clrpath
-        #  keydir + '/ca/crl.pem'
-        #end
+
+        def exists?
+          Dir.exists? datadir
+        end
+
+        def delete!
+          FileUtils.rm_r(datadir, :secure => true) unless SYSTEM_PKIS.include? @name
+        end
 
         def create_dh(n)
           FileUtils.mkdir_p keydir unless Dir.exists? keydir
