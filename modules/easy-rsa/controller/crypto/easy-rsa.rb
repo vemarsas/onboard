@@ -38,7 +38,7 @@ class OnBoard::Controller < Sinatra::Base
 
   get '/crypto/easy-rsa/:pkiname.:format' do
     ssl_pki = OnBoard::Crypto::SSL::PKI.new params[:pkiname]
-    not_found unless ssl_pki.exists?
+    not_found unless (ssl_pki.exists? or ssl_pki.system?)
     easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
     # create Diffie-Hellman params if they don't exist
     OnBoard::Crypto::SSL::KEY_SIZES.each do |n|
