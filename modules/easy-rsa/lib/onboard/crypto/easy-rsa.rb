@@ -69,7 +69,7 @@ class OnBoard
         def create_dh(n)
           FileUtils.mkdir_p keydir unless Dir.exists? keydir
           build_dh = 'build-dh'
-          if n.respond_to? :to_i and n.to_i > 1024
+          if n.respond_to? :to_i and n.to_i > 2048
             build_dh = 'build-dh.dsaparam'  # faster
           end
           System::Command.run <<EOF
