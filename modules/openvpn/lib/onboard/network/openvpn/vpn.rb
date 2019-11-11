@@ -59,7 +59,7 @@ class OnBoard
           # We are about to remove config files here...
           return unless uuids.any?
 
-          removed_dir = File.join CONFDIR, '.__removed__'
+          removed_dir = File.join CONFDIR, '.__cleanup__removed__'
           FileUtils.mkdir_p removed_dir
           Dir.glob(CONFDIR +
               '/[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]*').each do |fp|
@@ -360,6 +360,12 @@ EOF
             'category'  => 'openvpn',
             'hidden'    => false
           })
+          # Cleaup config dir if failed
+          if msg[:err] and opt_h[:conffile] == :auto
+            if Dir.exists? "#{CONFDIR}/#{uuid}"
+              FileUtils.rm_r "#{CONFDIR}/#{uuid}", :secure => true
+            end
+          end
           return msg
         end
 
