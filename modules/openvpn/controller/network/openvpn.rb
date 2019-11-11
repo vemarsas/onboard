@@ -22,6 +22,7 @@ class OnBoard
 
     get '/network/openvpn.:format' do
       vpns = OnBoard::Network::OpenVPN::VPN.getAll()
+      OnBoard::Network::OpenVPN::VPN.cleanup_config_files! :vpns => vpns
       format(
         :module => 'openvpn',
         :path => '/network/openvpn/vpn',

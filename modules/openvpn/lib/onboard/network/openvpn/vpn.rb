@@ -51,6 +51,28 @@ class OnBoard
 
         System::Log.register_category 'openvpn', 'OpenVPN'
 
+        def self.cleanup_config_files!(h={})
+          h[:vpns] ||= getAll()
+          uuids = h[:vpns].map{|vpn| vpn.data['uuid']}
+
+          # Be safe: empty uuids list may be due to a bug? or the fact that the list is really empty?
+          # We are about to remove config files here...
+          return unless uuids.any?
+
+          removed_dir = File.join CONFDIR, '.__removed__'
+          FileUtils.mkdir_p removed_dir
+          Dir.glob(CONFDIR +
+              '/[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]*').each do |fp|
+            if File.directory? fp
+              uuid = File.basename fp
+              unless uuids.include? uuid
+                FileUtils.mv fp, removed_dir
+                # FileUtils.rm_r fp, :secure => true
+              end
+            end
+          end
+        end
+
         def self.save
           FileUtils.mkdir_p CONFDIR unless Dir.exists? CONFDIR
           @@all_vpn = getAll() unless (
@@ -263,7 +285,7 @@ class OnBoard
             cmdline << '--port' << params['port'].to_s
             cmdline << '--proto' << params['proto']
             cmdline << '--keepalive' << '10' << '120' # suggested in OVPN ex.
-            cmdline << '--dh' << dh # Diffie Hellman params :-)
+            cmdline << '--dh' << dh # Diffie Hellman params
             cmdline << '--client-config-dir' << client_config_dir
             FileUtils.mkdir_p client_config_dir
           elsif params['remote_host'] =~ /\S/
