@@ -15,6 +15,9 @@ class OnBoard
 
         class << self
           def handle_legacy
+            unless File.exists? DATADIR
+              FileUtils.mkdir_p DATADIR
+            end
             unless File.exists? DEFAULTPKIDIR
               FileUtils.ln_s '..', DEFAULTPKIDIR
             end
