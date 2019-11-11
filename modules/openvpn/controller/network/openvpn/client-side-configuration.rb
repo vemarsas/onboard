@@ -57,12 +57,12 @@ class OnBoard
 
     # no web page here, just config files
     get %r{/network/openvpn/client-side-configuration/files/(.*)\.(zip|tgz|tar\.gz)} do
-      ssl_pki = Crypto::SSL::PKI.new params['pki']
       name, requested_file_extension = params[:captures]
       client_cn = name
       vpn = Network::OpenVPN::VPN.getAll.detect do |vpn_|
         vpn_.data['uuid'] == params['vpn_uuid']
       end
+      ssl_pki = Crypto::SSL::PKI.new(params['pki'] || vpn.data['pkiname'])
 
       not_found unless vpn
 
