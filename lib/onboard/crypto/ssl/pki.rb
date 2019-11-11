@@ -102,8 +102,9 @@ class OnBoard
 
           h = {} # return value
 
+          get_cadata!
+
           if opt_h[:with_ca]
-            get_cadata!
             if @cadata['cert']
               h['__pki_ca_cert__'] = @cadata
             end
