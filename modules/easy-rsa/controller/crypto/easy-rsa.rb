@@ -41,6 +41,10 @@ class OnBoard::Controller < Sinatra::Base
     not_found unless (ssl_pki.exists? or ssl_pki.system?)
     easyrsa_pki = OnBoard::Crypto::EasyRSA::PKI.new params[:pkiname]
     # create Diffie-Hellman params if they don't exist
+    dsaparam_above = 2048
+    if settings.development?  # Sinatra
+      dsaparam_above = 1024
+    end
     OnBoard::Crypto::SSL::KEY_SIZES.each do |n|
       # One thread at a time for each key size.
       # If there is another PKI building DH params of the same key size,
@@ -48,7 +52,7 @@ class OnBoard::Controller < Sinatra::Base
       Thread.new do
         easyrsa_pki.dh_mutex(n).synchronize do
           unless ssl_pki.dh_exists?(n)
-            easyrsa_pki.create_dh(n)
+            easyrsa_pki.create_dh(n, :dsaparam_above => dsaparam_above)
           end
         end
       end

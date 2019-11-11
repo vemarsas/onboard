@@ -66,10 +66,12 @@ class OnBoard
           FileUtils.rm_r(datadir, :secure => true) unless SYSTEM_PKIS.include? @name
         end
 
-        def create_dh(n)
+        def create_dh(n, opts={})
+          opts_default = {:dsaparam_above => 2048}
+          opts = opts_default.merge(opts)
           FileUtils.mkdir_p keydir unless Dir.exists? keydir
           build_dh = 'build-dh'
-          if n.respond_to? :to_i and n.to_i > 2048
+          if n.respond_to? :to_i and n.to_i > opts[:dsaparam_above]
             build_dh = 'build-dh.dsaparam'  # faster
           end
           System::Command.run <<EOF
