@@ -23,6 +23,8 @@ class OnBoard
         def self.guess_pkiname(h)
           if h[:filepath] =~ %r{#{Multi::SUBDIR}/([^/]+)/}
             return $1
+          elsif h[:filepath] =~ %r{^(.*/)?ssl/cert/.}
+            return 'default'
           end
         end
 
