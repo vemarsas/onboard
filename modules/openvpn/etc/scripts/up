@@ -28,12 +28,16 @@
 
 # require 'pp' # DEBUG
 
+require 'onboard/logger'
+
+OnBoard.use_default_logfile  # instead of STDOUT
+
 require 'onboard/network/interface'
 require 'onboard/network/routing'
 
 ifname = ARGV[0]
 
-puts "PATH=#{ENV['PATH']}"
+# puts "PATH=#{ENV['PATH']}"
 
 all_interfaces = OnBoard::Network::Interface.getAll
 

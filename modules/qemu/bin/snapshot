@@ -19,6 +19,9 @@ require 'fileutils'
 
 require 'chronic_duration'
 
+require 'onboard/logger'
+OnBoard.use_logfile
+
 require 'onboard/virtualization/qemu'
 
 class OnBoard

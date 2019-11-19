@@ -25,6 +25,10 @@ class OnBoard
       LOGGER.reopen logfile
     end
 
+    def use_default_logfile
+      use_logfile(LOGFILE)
+    end
+
     def log_to_stdout
       LOGGER.reopen STDOUT
     end
