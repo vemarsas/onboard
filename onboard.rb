@@ -20,6 +20,7 @@ require 'onboard/extensions/logger'
 require 'onboard/menu/node'
 require 'onboard/system/command'
 require 'onboard/platform/debian'
+require 'onboard/network/dnsmasq'
 
 if Process.uid == 0
   fail 'OnBoard should not be run as root: use an user who can sudo with no-password instead!'
@@ -64,8 +65,13 @@ class OnBoard
   end
 
   def self.web?
-    return true unless ARGV.include? '--no-web'
+    return true unless (ARGV.include?('--no-web') or ARGV.include?('--restore-dns'))
     return false
+  end
+
+  def self.restore_dns
+    Network::Dnsmasq.init_conf
+    Network::Dnsmasq.restart
   end
 
   def self.prepare
@@ -186,6 +192,10 @@ class OnBoard
 end
 
 OnBoard.prepare
+
+if ARGV.include? '--restore-dns'
+  restore_dns
+end
 
 if OnBoard.web?
   if $0 == __FILE__

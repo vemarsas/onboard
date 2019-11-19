@@ -21,7 +21,6 @@ CONFDIR=~$APP_USER/.onboard
 
 export DEBIAN_FRONTEND=noninteractive
 
-
 install_conffiles() {
     # See README file in doc/sysadm/examples/ .
     install -bvC -m 644 doc/sysadm/examples/etc/dnsmasq.conf            /etc/
@@ -166,7 +165,6 @@ systemctl enable margay
 systemctl start margay
 
 systemctl enable margay-persist
-systemctl start margay-persist  # Also resume dnsmasq after reconfig, it's not optional!
 
 cd $PROJECT_ROOT  # Apparently needed...
 
@@ -178,4 +176,7 @@ then
     apt-get -y remove wicd-daemon
 fi
 
-apt-get -y autoremove
+cd $PROJECT_ROOT
+
+# Sometimes errors in setup leave the system with no Internet connection, this may sort it.
+ruby onboard.rb --restore-dns
