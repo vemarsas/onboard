@@ -179,4 +179,4 @@ fi
 cd $PROJECT_ROOT
 
 # Sometimes errors in setup leave the system with no Internet connection, this may sort it.
-ruby onboard.rb --restore-dns
+su onboard -c "ruby onboard.rb --no-web --restore-dns"
