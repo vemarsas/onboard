@@ -2,7 +2,12 @@
 
 ONBOARD_ROOT=${1:-`pwd`}
 ONBOARD_USER=${2:-'onboard'}
+APP_USER=$ONBOARD_USER
 ONBOARD_GROUP=$ONBOARD_USER
+
+PROJECT_ROOT=$ONBOARD_ROOT
+
+SCRIPTDIR=$ONBOARD_ROOT/etc/scripts
 
 enable_onboard_modules() {
 	cd $ONBOARD_ROOT/modules/
@@ -39,3 +44,5 @@ bundle install
 
 systemctl stop margay
 systemctl start margay
+
+. $SCRIPTDIR/_restore_dns.sh

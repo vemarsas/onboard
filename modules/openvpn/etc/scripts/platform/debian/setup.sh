@@ -5,6 +5,8 @@
 PROJECT_ROOT=${1:-'.'}
 APP_USER=${2:-'onboard'}
 
+SCRIPTDIR=$PROJECT_ROOT/etc/scripts
+
 # apt-get update
 apt-get -y install openvpn
 
@@ -34,3 +36,4 @@ su - $APP_USER -c "
 
 systemctl start margay
 
+. $SCRIPTDIR/_restore_dns.sh

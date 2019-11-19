@@ -19,6 +19,8 @@ APP_USER=${2:-'onboard'}
 
 CONFDIR=~$APP_USER/.onboard
 
+SCRIPTDIR=$PROJECT_ROOT/etc/scripts
+
 export DEBIAN_FRONTEND=noninteractive
 
 install_conffiles() {
@@ -176,7 +178,4 @@ then
     apt-get -y remove wicd-daemon
 fi
 
-cd $PROJECT_ROOT
-
-# Sometimes errors in setup leave the system with no Internet connection, this may sort it.
-su onboard -c "ruby onboard.rb --no-web --restore-dns"
+. $SCRIPTDIR/_restore_dns.sh
