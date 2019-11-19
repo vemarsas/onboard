@@ -32,3 +32,4 @@ systemctl stop margay
 systemctl start margay
 
 . $SCRIPTDIR/_restore_dns.sh
+

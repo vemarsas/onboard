@@ -36,4 +36,4 @@ su - $APP_USER -c "
 
 systemctl start margay
 
-. $SCRIPTDIR/_restore_dns.sh
+
