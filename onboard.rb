@@ -23,16 +23,10 @@ require 'onboard/platform/debian'
 require 'onboard/network/dnsmasq'
 
 
-class OnBoard
-  def self.web?
-    return true unless (ARGV.include?('--no-web') or ARGV.include?('--restore-dns'))
-    return false
-  end
-end
-
 if Process.uid == 0
   fail 'OnBoard should not be run as root: use an user who can sudo instead!'
 end
+
 
 class OnBoard
   FileUtils.mkdir_p RWDIR
@@ -70,6 +64,11 @@ class OnBoard
         end
       end
     end
+  end
+
+  def self.web?
+    return true unless (ARGV.include?('--no-web') or ARGV.include?('--restore-dns'))
+    return false
   end
 
   def self.restore_dns

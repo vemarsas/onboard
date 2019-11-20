@@ -36,4 +36,3 @@ su - $APP_USER -c "
 
 systemctl start margay
 
-
