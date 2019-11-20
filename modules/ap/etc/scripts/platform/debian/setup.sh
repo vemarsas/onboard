@@ -1,7 +1,6 @@
 #!/bin/bash
 
 APP_USER=onboard
-ONBOARD_GROUP=$APP_USER
 PROJECT_ROOT=/home/$APP_USER/onboard
 
 SCRIPTDIR=$PROJECT_ROOT/etc/scripts
