@@ -158,7 +158,7 @@
           and with same password as <span class="term">MAC-Auth Password</span> below.
         </div>
       </th>
-      <td><input type="checkbox" name="conf[macauth]"/></td>
+      <td><input type="checkbox" <%= 'checked' if chilli.conf['macauth'] %> name="conf[macauth]"/></td>
     </tr>
     <tr title="Empty to leave unchanged">
       <th scope="row">MAC-Auth Password</th>
