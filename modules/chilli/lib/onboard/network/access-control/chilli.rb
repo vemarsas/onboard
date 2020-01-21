@@ -295,7 +295,7 @@ class OnBoard
               if value =~ /\s/
                 value = "\"#{value}\"" # protect with double-quotes
               end
-              f.write "#{key}\t#{value}\n"
+              f.write "#{key}\t#{value}\n"  # TODO: check truthy-ness?
             end
           end
           f.close

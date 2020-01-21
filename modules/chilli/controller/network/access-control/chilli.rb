@@ -154,6 +154,9 @@ class OnBoard
             else
               raise CHILLI_CLASS::BadRequest, "MAC-Auth passwords do not match!"
             end
+          else
+            chilli.conf.delete 'macauth'
+            chilli.conf.delete 'macpasswd'
           end
 
           # ########
