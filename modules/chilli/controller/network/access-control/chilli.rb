@@ -123,6 +123,8 @@ class OnBoard
             chilli.conf[key] = val unless key =~ /secret|passwd/ or key == 'macauth'
           end
 
+          # TODO: some of the below logic should be in lib/ ?
+
           # passwords are treated differently
           if params['conf']['radiussecret'].length > 0
             chilli.conf['radiussecret'] = params['conf']['radiussecret']
