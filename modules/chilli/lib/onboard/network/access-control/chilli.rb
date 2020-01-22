@@ -102,6 +102,8 @@ class OnBoard
           chilli_new = new(:conffile => DEFAULT_NEW_CONF_FILE)
           if params['conf']['macauth']
             params['conf']['macauth'] = true  # instead of "on" string
+          else
+            params['conf'].delete 'macauth'  # instead of some falsey value, just remove the key
           end
           chilli_new.conf.merge! params['conf']
           chilli_new.set_dhcp_range(params['dhcp_start'], params['dhcp_end'])
