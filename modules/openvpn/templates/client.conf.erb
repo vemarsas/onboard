@@ -111,18 +111,9 @@ ca    <%= ca %>
 cert  <%= cert %>
 key   <%= key %>
 
-# Verify server certificate by checking
-# that the certicate has the nsCertType
-# field set to "server".  This is an
-# important precaution to protect against
-# a potential attack discussed here:
-#  http://openvpn.net/howto.html#mitm
-#
-# To use this feature, you will need to generate
-# your server certificates with the nsCertType
-# field set to "server".  The build-key-server
-# script in the easy-rsa folder will do this.
-ns-cert-type server
+# Require that peer certificate was signed with an explicit key usage: server,
+# and extended key usage based on RFC3280 TLS rules.
+remote-cert-tls server
 
 # If a tls-auth key is used on the server
 # then every client must also have the key.
