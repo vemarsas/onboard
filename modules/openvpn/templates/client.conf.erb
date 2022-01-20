@@ -5,7 +5,7 @@
 %>
 
 ##############################################
-# Sample client-side OpenVPN 2.0 config file #
+# Sample client-side OpenVPN 2.x config file #
 # for connecting to multi-client server.     #
 #                                            #
 # This configuration can be used by multiple #
@@ -132,6 +132,9 @@ ns-cert-type server
 # If the cipher option is used on the server
 # then you must also specify it here.
 ;cipher x
+
+# Recommended security option: do not cache passwords in memory
+auth-nocache
 
 <% if vpn.data['comp-lzo'] %>
 # Enable compression on the VPN link.
