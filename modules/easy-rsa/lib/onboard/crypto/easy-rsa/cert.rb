@@ -94,7 +94,7 @@ EOF
                 begin
                   FileUtils.chown nil, Process.gid, destkey
                   FileUtils.chown nil, Process.gid, destcert
-                  FileUtils.chmod 0640, destkey
+                  FileUtils.chmod 0600, destkey
                   FileUtils.chmod 0644, destcert
                 rescue
                   FileUtils.chmod 0600, destkey
