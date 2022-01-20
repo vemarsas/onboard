@@ -124,7 +124,10 @@
           <div style="text-align:center" class="optinfo">(TAP only)</div>
         </th>
         <th rowspan="2">Demand Server-type Certificate for the Server?</th>
-        <th rowspan="2">LZO Compression?</th>
+        <th rowspan="2">
+          LZO Compression?
+          <div class="optinfo"><span style="display:block" class="error">Insecure, use for compatibility only.</span></div>
+        </th>
       </tr>
       <tr>
         <th>Host</th>
@@ -222,7 +225,7 @@
           <em>(recommended)</em>
         </td>
         <td rowspan="<%= rowspan %>" style="text-align: center;">
-          <input type="checkbox" checked name="comp-lzo"/>
+          <input type="checkbox" name="comp-lzo"/>
         </td>
       </tr>
       <% (rowspan - 1).times do %>
