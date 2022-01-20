@@ -133,10 +133,12 @@ ns-cert-type server
 # then you must also specify it here.
 ;cipher x
 
+<% if vpn.data['comp-lzo'] %>
 # Enable compression on the VPN link.
 # Don't enable this unless it is also
 # enabled in the server config file.
 comp-lzo
+<% end %>
 
 # Set log file verbosity.
 verb 3
