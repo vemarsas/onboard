@@ -276,6 +276,7 @@ class OnBoard
 
             if dev_type == 'tun'
               cmdline << '--server' << net.to_s << net.netmask.to_s
+              cmdline << '--topology' << 'subnet'
             elsif dev_type == 'tap'
               cmdline << '--mode' << 'server' << '--tls-server'
             end
