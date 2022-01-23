@@ -276,6 +276,7 @@ class OnBoard
 
             if dev_type == 'tun'
               cmdline << '--server' << net.to_s << net.netmask.to_s
+              cmdline << '--topology' << 'subnet'
             elsif dev_type == 'tap'
               cmdline << '--mode' << 'server' << '--tls-server'
             end
@@ -294,14 +295,15 @@ class OnBoard
                 '--client' << '--nobind'
             cmdline <<
                 '--remote' << params['remote_host'] << params['remote_port'] << params['proto']
-            cmdline << '--ns-cert-type' << 'server' if
-                params['ns-cert-type_server'] == 'on'
+            cmdline << '--remote-cert-tls' << 'server' if
+                params['ns-cert-type_server'] == 'on' or params['remote-cert-tls_server'] == 'on'
+            cmdline << '--auth-nocache'  # Do not cache passwords in memory (openvpn warning)
           elsif params['remote_host'].respond_to? :each_index and
               params['remote_host'].detect{|x| x =~ /\S/}
               # client -> multiple server (for redundancy)
             cmdline << '--client' << '--nobind'
-            cmdline << '--ns-cert-type' << 'server' if
-                params['ns-cert-type_server'] == 'on'
+            cmdline << '--remote-cert-tls' << 'server' if
+                params['ns-cert-type_server'] == 'on' or params['remote-cert-tls_server'] == 'on'
             params['remote_host'].each_index do |i|
               next unless params['remote_host'][i] =~ /\S/
               params['proto'][i] = 'udp'        unless
@@ -313,6 +315,7 @@ class OnBoard
                   params['remote_port'][i] <<
                   params['proto'][i]
             end
+            cmdline << '--auth-nocache'  # Do not cache passwords in memory (openvpn warning)
           else
             return {
               :ok => false,

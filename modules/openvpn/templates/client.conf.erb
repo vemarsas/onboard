@@ -5,7 +5,7 @@
 %>
 
 ##############################################
-# Sample client-side OpenVPN 2.0 config file #
+# Sample client-side OpenVPN 2.x config file #
 # for connecting to multi-client server.     #
 #                                            #
 # This configuration can be used by multiple #
@@ -111,18 +111,9 @@ ca    <%= ca %>
 cert  <%= cert %>
 key   <%= key %>
 
-# Verify server certificate by checking
-# that the certicate has the nsCertType
-# field set to "server".  This is an
-# important precaution to protect against
-# a potential attack discussed here:
-#  http://openvpn.net/howto.html#mitm
-#
-# To use this feature, you will need to generate
-# your server certificates with the nsCertType
-# field set to "server".  The build-key-server
-# script in the easy-rsa folder will do this.
-ns-cert-type server
+# Require that peer certificate was signed with an explicit key usage: server,
+# and extended key usage based on RFC3280 TLS rules.
+remote-cert-tls server
 
 # If a tls-auth key is used on the server
 # then every client must also have the key.
@@ -133,10 +124,15 @@ ns-cert-type server
 # then you must also specify it here.
 ;cipher x
 
+# Recommended security option: do not cache passwords in memory
+auth-nocache
+
+<% if vpn.data['comp-lzo'] %>
 # Enable compression on the VPN link.
 # Don't enable this unless it is also
 # enabled in the server config file.
 comp-lzo
+<% end %>
 
 # Set log file verbosity.
 verb 3
