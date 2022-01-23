@@ -54,7 +54,7 @@ they are real e2e tests connecting to real local db  etc.
 ## Copying
 
 Except where otherwise stated, this work is
-Copyright 2009-2019
+Copyright 2009-2022
 Guido De Rosa <guido.derosa at vemarsas.it> and
 Antonello Ventre <antonello.ventre at vemarsas.it>.
 
