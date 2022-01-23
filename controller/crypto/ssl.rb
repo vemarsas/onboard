@@ -120,9 +120,11 @@ class OnBoard
         if params['private_key'].respond_to? :[]
           # priv. key verification is not done here...
           FileUtils.mkdir_p ssl_pki.keydir
-          File.open("#{ssl_pki.keydir}/#{cn}.key", 'w') do |f|
+          _keyfilepath = "#{ssl_pki.keydir}/#{cn}.key"
+          File.open(_keyfilepath, 'w') do |f|
             f.write File.read params['private_key'][:tempfile]
           end
+          File.chmod(0600, _keyfilepath)
           params['private_key'][:tempfile].unlink
         end
         params['certificate'][:tempfile].unlink
