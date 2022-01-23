@@ -297,6 +297,7 @@ class OnBoard
                 '--remote' << params['remote_host'] << params['remote_port'] << params['proto']
             cmdline << '--remote-cert-tls' << 'server' if
                 params['ns-cert-type_server'] == 'on' or params['remote-cert-tls_server'] == 'on'
+            cmdline << '--auth-nocache'  # Do not cache passwords in memory (openvpn warning)
           elsif params['remote_host'].respond_to? :each_index and
               params['remote_host'].detect{|x| x =~ /\S/}
               # client -> multiple server (for redundancy)
@@ -314,6 +315,7 @@ class OnBoard
                   params['remote_port'][i] <<
                   params['proto'][i]
             end
+            cmdline << '--auth-nocache'  # Do not cache passwords in memory (openvpn warning)
           else
             return {
               :ok => false,
