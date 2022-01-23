@@ -1,4 +1,4 @@
-2022.02.00
+2022.02.01
 
 * Fix file permission security concern (private TLS keys no longer group-readable)
 * openvpn: `topology subnet` instead of deprecated `net30`: allows nets as small as /29
