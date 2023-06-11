@@ -12,6 +12,7 @@ GEM
     daemons (1.4.1)
     dansguardian (0.5.2.1)
       configfiles
+    date (3.3.3)
     diff-lcs (1.5.0)
     escape (0.0.4)
     eventmachine (1.2.7)
@@ -26,15 +27,18 @@ GEM
       sinatra-r18n
     i18n_data (0.17.1)
       simple_po_parser (~> 1.1)
-    json (2.6.2)
+    json (2.6.3)
     json_spec (1.1.5)
       multi_json (~> 1.0)
       rspec (>= 2.0, < 4.0)
     locale (2.1.3)
     macaddr (1.7.2)
       systemu (~> 2.6.5)
-    mail (2.7.1)
+    mail (2.8.1)
       mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
     mini_mime (1.1.2)
     minitar (0.8)
     minitar-cli (0.8)
@@ -43,55 +47,65 @@ GEM
     multi_json (1.15.0)
     mustermann (2.0.2)
       ruby2_keywords (~> 0.0.1)
+    net-imap (0.3.4)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
+    net-protocol (0.2.1)
+      timeout
+    net-smtp (0.3.3)
+      net-protocol
     numerizer (0.1.1)
     powerbar (1.0.18)
       hashie (>= 1.1.0)
     psych (3.1.0)
     r18n-core (2.2.0)
-    rack (2.2.4)
+    rack (2.2.7)
     rack-contrib (2.3.0)
       rack (~> 2.0)
-    rack-protection (2.2.2)
+    rack-protection (2.2.4)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rspec (3.11.0)
-      rspec-core (~> 3.11.0)
-      rspec-expectations (~> 3.11.0)
-      rspec-mocks (~> 3.11.0)
-    rspec-core (3.11.0)
-      rspec-support (~> 3.11.0)
-    rspec-expectations (3.11.1)
+    rspec (3.12.0)
+      rspec-core (~> 3.12.0)
+      rspec-expectations (~> 3.12.0)
+      rspec-mocks (~> 3.12.0)
+    rspec-core (3.12.2)
+      rspec-support (~> 3.12.0)
+    rspec-expectations (3.12.3)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.11.0)
-    rspec-mocks (3.11.1)
+      rspec-support (~> 3.12.0)
+    rspec-mocks (3.12.5)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.11.0)
-    rspec-support (3.11.1)
+      rspec-support (~> 3.12.0)
+    rspec-support (3.12.0)
     ruby2_keywords (0.0.5)
     rubytree (2.0.0)
       json (~> 2.0, > 2.3.1)
     rubyzip (1.3.0)
     simple_po_parser (1.1.6)
-    sinatra (2.2.2)
+    sinatra (2.2.4)
       mustermann (~> 2.0)
       rack (~> 2.2)
-      rack-protection (= 2.2.2)
+      rack-protection (= 2.2.4)
       tilt (~> 2.0)
     sinatra-r18n (2.2.0)
       r18n-core (= 2.2.0)
       sinatra (>= 1.3)
     systemu (2.6.5)
-    thin (1.8.1)
+    thin (1.8.2)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
       rack (>= 1, < 3)
-    tilt (2.0.11)
+    tilt (2.2.0)
+    timeout (0.3.2)
     uuid (2.3.9)
       macaddr (~> 1.0)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   archive-tar-minitar!
@@ -117,4 +131,4 @@ DEPENDENCIES
   uuid!
 
 BUNDLED WITH
-   2.3.5
+   2.4.13

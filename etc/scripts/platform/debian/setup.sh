@@ -9,9 +9,6 @@ set +e
 # is copied / placed in the relevant directory with proper
 # ownership/permissions.
 # This script takes control from there.
-# Another script may be implemented for that very initial
-# bootstrap instead, and will likely not be used by Vagrant but only for
-# deployment on real hardware or "naked" VMs.
 
 # echo $* # DEBUG
 
@@ -99,8 +96,10 @@ su - $APP_USER -c "
     # Module names are also Gemfile groups
     set -x
     bundle config set without $(bundle_without_all)
-    bundle install
 "
+# Survival mode after https://github.com/rubygems/rubygems/pull/5888 : run as root.
+# Future projects will use Bundler Deployment Mode or rvm.
+bundle install
 
 modprobe nf_conntrack
 service procps restart
